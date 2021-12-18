@@ -18,7 +18,6 @@
 // This include is relative to $CARAVEL_PATH (see Makefile)
 #include "verilog/dv/caravel/defs.h"
 #include "verilog/dv/caravel/stub.c"
-
 /*
 	LA Test:
 		- Reads to and writes from each SRAM
@@ -124,7 +123,6 @@ void read_dp_sram(int sel){
 	// Toggle clock to store into dout FF
 	reg_la3_data = 0x00000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
-
 	// Toggle clock to replace din with dout
 	reg_la3_data = 0x10000000 | sel << 12;
 	reg_la3_data = 0x90000000 | sel << 12;
@@ -213,43 +211,42 @@ void main()
                                         // connect to housekeeping SPI
 
 	// This is to signal when the code is ready to the test bench
-	reg_mprj_io_0 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_1 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_2 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_3 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_4 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_5 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_6 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_7 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_8 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_9 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_28 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_29 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_30 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_31 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_32 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_33 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_34 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_35 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_36 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_37 = GPIO_MODE_MGMT_STD_OUTPUT;
  
 	/* Apply configuration */
 	reg_mprj_xfer = 1;
 	while (reg_mprj_xfer == 1);
 	
-	// To start, set pin 0 to 1
-	reg_mprj_datal = 0x00000001;
-
+	// To start, set pin 28 to 1
+	reg_mprj_datal = 0x10000000;
 	/* DUAL PORT MEMORIES */
 
 	//SRAM 0
 	write_dp_sram(0);
 	read_dp_sram(0);
 
-	//SRAM 1
-	write_dp_sram(1);
-	read_dp_sram(1);
+        //SRAM 1
+        write_dp_sram(1);
+        read_dp_sram(1);
 
 	// SRAM 2
 	write_dp_sram(2);
 	read_dp_sram(2);
-	
-	// SRAM 3
-	write_dp_sram(3);
-	read_dp_sram(3);
+      
+        // SRAM 3
+        write_dp_sram(3);
+        read_dp_sram(3);
 
-	// SRAM 4
+        // SRAM 4
 	write_dp_sram(4);
 	read_dp_sram(4);
 	
@@ -271,6 +268,6 @@ void main()
 	write_sp_sram(11);
 	read_sp_sram(11);
 
-	// On end, set pin 0 to 0
+	// On end, set pin 8 to 0
 	reg_mprj_datal = 0x00000000;
 }
