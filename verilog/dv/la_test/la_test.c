@@ -83,7 +83,7 @@ void write_dp_sram(int sel) {
 	// Toggle clock to load into SRAM register
 	reg_la3_data = 0x20000000 | sel << 12;
 	reg_la3_data = 0xA0000000 | sel << 12;
-	
+
 	// Toggle clock to write SRAM
 	reg_la3_data = 0x08000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
@@ -98,7 +98,7 @@ void write_dp_sram(int sel) {
 	// Toggle clock to load into SRAM register
 	reg_la3_data = 0x20000000 | sel << 12;
 	reg_la3_data = 0xA0000000 | sel << 12;
-	
+
 	// Toggle clock to write SRAM
 	reg_la3_data = 0x08000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
@@ -115,7 +115,7 @@ void read_dp_sram(int sel){
 	// Toggle clock to load into SRAM register
 	reg_la3_data = 0x20000000 | sel << 12;
 	reg_la3_data = 0xA0000000 | sel << 12;
-	
+
 	// Toggle clock to read SRAM
 	reg_la3_data = 0x08000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
@@ -134,7 +134,7 @@ void read_dp_sram(int sel){
 	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
 	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
 	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
-	
+
 	reg_la_sample = 1;
 	// Now read them
 	if(reg_la0_data != 0x00000050){
@@ -159,7 +159,7 @@ void write_sp_sram(int sel) {
 	// Toggle clock to load into SRAM register
 	reg_la3_data = 0x20000000 | sel << 12;
 	reg_la3_data = 0xA0000000 | sel << 12;
-	
+
 	// Toggle clock to write SRAM
 	reg_la3_data = 0x08000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
@@ -176,7 +176,7 @@ void read_sp_sram(int sel){
 	// Toggle clock to load into SRAM register
 	reg_la3_data = 0x20000000 | sel << 12;
 	reg_la3_data = 0xA0000000 | sel << 12;
-	
+
 	// Toggle clock to read SRAM
 	reg_la3_data = 0x08000000 | sel << 12;
 	reg_la3_data = 0x80000000 | sel << 12;
@@ -196,7 +196,7 @@ void read_sp_sram(int sel){
 	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
 	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
 	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
-	
+
 	reg_la_sample = 1;
 	// Now read them
 	if(reg_la2_data != 0x1DEADBEE){
@@ -241,21 +241,21 @@ void main()
 	// SRAM 2
 	write_dp_sram(2);
 	read_dp_sram(2);
-      
-        // SRAM 3
-        write_dp_sram(3);
-        read_dp_sram(3);
+
+	// SRAM 3
+	write_dp_sram(3);
+	read_dp_sram(3);
 
         // SRAM 4
 	write_dp_sram(4);
 	read_dp_sram(4);
-	
+
 	/* SINGLE PORT MEMORIES */
-	
+
 	// SRAM 8
 	write_sp_sram(8);
 	read_sp_sram(8);
-	
+
 	// SRAM 9
 	write_sp_sram(9);
 	read_sp_sram(9);

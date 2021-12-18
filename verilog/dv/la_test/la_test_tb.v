@@ -133,6 +133,7 @@ module la_test_tb;
 
 
 
+
 	initial begin
 		RSTB <= 1'b0;
 		CSB  <= 1'b1;		// Force CSB high
