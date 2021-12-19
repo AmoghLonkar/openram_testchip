@@ -95,7 +95,7 @@ module user_project_wrapper #(
    wire [`MAX_CHIPS-1:0]  csb0;
    wire [`MAX_CHIPS-1:0]  csb1;
 
-   wire     in_select = io_in[16];
+   wire [1:0]    in_select = {io_in[23],io_in[16]};
    wire     gpio_resetn = io_in[15];
    wire     gpio_clk = io_in[17];
    wire     gpio_scan = io_in[19];
@@ -118,7 +118,12 @@ module user_project_wrapper #(
    // Selecting clock pin
    reg clk;
    always @(*) begin
-      clk = in_select ? gpio_clk : la_clk;
+	  case (in_select)
+	  	2'b00 : clk = la_clk;
+		2'b01 : clk = gpio_clk;
+		default : clk = 0;
+	  endcase
+      //clk = in_select ? gpio_clk : la_clk;
    end
 
    // global csb is low with either GPIO or LA csb

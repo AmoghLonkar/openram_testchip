@@ -58,7 +58,9 @@ module la_test_tb;
 	wire gpio_out = mprj_io[22];
 
 	assign mprj_io[15] = 1'b1; // resetn
-	assign mprj_io[16] = 1'b0; // in_select
+	// assigning `b00 to pin 16 and 23 enables the clock from la
+	assign mprj_io[16] = 1'b0; // in_select[0]
+	assign mprj_io[23] = 1'b0; // in_select[1]
 	assign mprj_io[17] = gpio_clk;
 	assign mprj_io[18] = gpio_in;
 	assign mprj_io[19] = gpio_scan;
