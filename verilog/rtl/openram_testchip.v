@@ -21,6 +21,17 @@ module openram_testchip(
 			input         gpio_scan,
 			input         gpio_sram_load,
 			input         global_csb,
+			// wishbone related control signals
+    		input wb_clk_i,
+    		input wb_rst_i,
+    		input wbs_stb_i,
+    		input wbs_cyc_i,
+    		input wbs_we_i,
+    		input [3:0] wbs_sel_i,
+    		input [31:0] wbs_dat_i,
+    		input [31:0] wbs_adr_i,
+    		output wbs_ack_o,
+    		output [31:0] wbs_dat_o,
 			// SRAM data outputs to be captured
 			input  [`DATA_SIZE-1:0] sram0_data0,
 			input  [`DATA_SIZE-1:0] sram0_data1,
@@ -112,25 +123,74 @@ end
 
 // Splitting register bits into fields
 always @(*) begin
-   chip_select = sram_register[`TOTAL_SIZE-1:`TOTAL_SIZE-`SELECT_SIZE];
+	if(wbs_stb_i && wbs_cyc_i) begin
+		chip_select = 0;
+   		addr0 = ram_addr0;
+   		din0 = ram_din0;
+   		web0 = ram_web0;
+   		wmask0 = ram_wmask0;
+		// dont cares for now since we are just testing single port for now
+   		addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   		din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   		csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   		web1 = sram_register[`WMASK_SIZE];
+   		wmask1 = sram_register[`WMASK_SIZE-1:0];
+	end
+	else begin
+   		chip_select = sram_register[`TOTAL_SIZE-1:`TOTAL_SIZE-`SELECT_SIZE];
 
-   addr0 = sram_register[`ADDR_SIZE+`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+2];
-   din0 = sram_register[`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`PORT_SIZE+`WMASK_SIZE+2];
-   csb0_temp = global_csb | sram_register[`PORT_SIZE+`WMASK_SIZE+1];
-   web0 = sram_register[`PORT_SIZE+`WMASK_SIZE];
-   wmask0 = sram_register[`PORT_SIZE+`WMASK_SIZE-1:`PORT_SIZE];
+   		addr0 = sram_register[`ADDR_SIZE+`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+2];
+   		din0 = sram_register[`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`PORT_SIZE+`WMASK_SIZE+2];
+   		csb0_temp = global_csb | sram_register[`PORT_SIZE+`WMASK_SIZE+1];
+   		web0 = sram_register[`PORT_SIZE+`WMASK_SIZE];
+   		wmask0 = sram_register[`PORT_SIZE+`WMASK_SIZE-1:`PORT_SIZE];
 
-   addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   web1 = sram_register[`WMASK_SIZE];
-   wmask1 = sram_register[`WMASK_SIZE-1:0];
+   		addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   		din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   		csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   		web1 = sram_register[`WMASK_SIZE];
+   		wmask1 = sram_register[`WMASK_SIZE-1:0];
+   	end
 end
 
+// Using the wishbone signals for enabling memories
+	wire ram_clk0;
+	wire ram_csb0;
+	wire ram_web0;
+	wire ram_wmask0;
+	wire ram_addr0;
+	wire ram_din0;
+	wire ram_dout0;
+	wishbone_wrapper WRAPPER(
+    	.wb_clk_i(wb_clk_i),
+    	.wb_rst_i(wb_rst_i),
+    	.wbs_stb_i(wbs_stb_i),
+    	.wbs_cyc_i(wbs_cyc_i),
+    	.wbs_we_i(wbs_we_i),
+    	.wbs_sel_i(wbs_sel_i),
+    	.wbs_dat_i(wbs_dat_i),
+    	.wbs_adr_i(wbs_adr_i),
+    	.wbs_ack_o(wbs_ack_o),
+    	.wbs_dat_o(wbs_dat_o),
+		// OpenRAM interface
+    	.ram_clk0(ram_clk0),       // (output) clock
+    	.ram_csb0(ram_csb0),       // (output) active low chip select
+    	.ram_web0(ram_web0),       // (output) active low write control
+    	.ram_wmask0(ram_wmask0),   // (output) write (byte) mask
+    	.ram_addr0(ram_addr0),	   // (output)
+    	.ram_din0(read_data0),	   // (input) read from sram and sent through wb 
+    	.ram_dout0(ram_din0)	   // (output) read from wb and sent to sram
+	);
 // Apply the correct CSB
 always @(*) begin
-   csb0 = ~( (~{15'b111111111111111, csb0_temp}) << chip_select);
-   csb1 = ~(  (~{15'b111111111111111, csb1_temp}) << chip_select);
+	if(wbs_stb_i && wbs_cyc_i) begin
+		csb0 = 16'b1111111111111110;
+		csb1 = 16'b1111111111111111;
+	end
+	else begin
+   		csb0 = ~( (~{15'b111111111111111, csb0_temp}) << chip_select);
+   		csb1 = ~(  (~{15'b111111111111111, csb1_temp}) << chip_select);
+	end
 end
 
 // Mux value of correct SRAM data input to feed into

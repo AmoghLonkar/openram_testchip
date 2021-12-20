@@ -121,9 +121,9 @@ module user_project_wrapper #(
 	  case (in_select)
 	  	2'b00 : clk = la_clk;
 		2'b01 : clk = gpio_clk;
+		2'b10 : clk = wb_clk_i;
 		default : clk = 0;
 	  endcase
-      //clk = in_select ? gpio_clk : la_clk;
    end
 
    // global csb is low with either GPIO or LA csb
@@ -137,16 +137,27 @@ module user_project_wrapper #(
 				  .resetn(rstn),
 				  .clk(clk),
 				  .global_csb(global_csb),
+				  // gpio related control signals
 				  .gpio_scan(gpio_scan),
 				  .gpio_sram_load(gpio_sram_load),
 				  .gpio_in(gpio_in),
 				  .gpio_out(gpio_out),
-
+				  // la related control signals
 				  .la_in_load(la_in_load),
 				  .la_sram_load(la_sram_load),
 				  .la_data_in(la_data_in[111:0]),
 				  .la_data_out(la_data_out[111:0]),
-
+				  // wishbone related control signals
+    			  .wb_clk_i(wb_clk_i),
+    			  .wb_rst_i(wb_rst_i),
+    			  .wbs_stb_i(wbs_stb_i),
+    			  .wbs_cyc_i(wbs_cyc_i),
+    			  .wbs_we_i(wbs_we_i),
+    			  .wbs_sel_i(wbs_sel_i),
+    			  .wbs_dat_i(wbs_dat_i),
+    			  .wbs_adr_i(wbs_adr_i),
+    			  .wbs_ack_o(wbs_ack_o),
+    			  .wbs_dat_o(wbs_dat_o),
 				  // Shared control/data to the SRAMs
 				  .addr0(addr0),
 				  .din0(din0),
