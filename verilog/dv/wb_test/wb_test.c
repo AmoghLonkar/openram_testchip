@@ -78,28 +78,30 @@ void main()
 	// Flag start of the test
 	reg_mprj_datal = 0x10000000;
 
-	// OpenRAM test
 
-	// Fill memory
-//	for (address = 0; address < OPENRAM_SIZE_DWORDS; address += 32)
-//	{
-//		// generate some dword based on address
-//		OPENRAM_MEM(address) = generate_value(address);
-//	}
-//
-//	// Check memory
-//	for (address = 0; address < OPENRAM_SIZE_DWORDS; address += 32)
-//	{
-//		// check dword based on address
-//		if (OPENRAM_MEM(address) != generate_value(address))
-//		{
-//			reg_mprj_datal = 0x20000000;
-//			return;				// instant fail
-//		}
-//	}
+	// configuring them as output so that we can provide a stable de-asserted reset through caravel la pin 126	
+	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
+	// writing 0 so that la pin 126 gets 0 and de-activates the reset instead of keeping it dont care.
+	reg_la3_data = 0x00000000;
 
 	OPENRAM_MEM(0) = 0xdeadbeef;
+	OPENRAM_MEM(4) = 0xdeadbee0;
+	OPENRAM_MEM(8) = 0xffffffff;
+	OPENRAM_MEM(12) = 0xdeaddead;
+	// this is not working because the data is correct but sp rams send an additional x which makes this fail
 	if (OPENRAM_MEM(0) != 0xdeadbeef) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x20000000;
+	}
+	if (OPENRAM_MEM(4) != 0xdeadbee0) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x20000000;
+	}
+	if (OPENRAM_MEM(8) != 0xffffffff) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x20000000;
+	}
+	if (OPENRAM_MEM(12) != 0xdeaddead) {
 		// send an error signal to the testbench
 		reg_mprj_datal = 0x20000000;
 	}
