@@ -39,7 +39,6 @@ module wishbone_wrapper
 	
 	wire ram_cs;
 	assign ram_cs = wbs_stb_i && wbs_cyc_i && ((wbs_adr_i & ADDR_HI_MASK) == BASE_ADDR) && !wb_rst_i;
-	
 	reg ram_cs_r;
 	reg ram_wbs_ack_r;
 	always @(negedge wb_clk_i) begin

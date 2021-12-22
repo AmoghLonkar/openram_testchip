@@ -30,6 +30,7 @@ module openram_testchip(
     		input [3:0] wbs_sel_i,
     		input [31:0] wbs_dat_i,
     		input [31:0] wbs_adr_i,
+			input  [`DATA_SIZE-1:0] wbs_sram8_data,
     		output wbs_ack_o,
     		output [31:0] wbs_dat_o,
 			// SRAM data outputs to be captured
@@ -106,6 +107,7 @@ module openram_testchip(
 	wire [31:0] ram_din0;
 	wire [31:0] ram_dout0;
 
+
 always @ (posedge clk) begin
    if(!resetn) begin
       sram_register <= {`TOTAL_SIZE{1'b0}};
@@ -128,7 +130,6 @@ always @ (posedge clk) begin
 			sram_register[`WMASK_SIZE+1:0]};
    end
 end
-
 	wishbone_wrapper WRAPPER(
     	.wb_clk_i(wb_clk_i),
     	.wb_rst_i(wb_rst_i),
@@ -146,14 +147,14 @@ end
     	.ram_web0(ram_web0),       // (output) active low write control
     	.ram_wmask0(ram_wmask0),   // (output) write (byte) mask
     	.ram_addr0(ram_addr0),	   // (output)
-    	.ram_din0(read_data0),	   // (input) read from sram and sent through wb 
+    	.ram_din0(wbs_sram8_data),	   // (input) read from sram and sent through wb 
     	.ram_dout0(ram_din0)	   // (output) read from wb and sent to sram
 	);
 
 // Splitting register bits into fields
 always @(*) begin
 	if(wbs_stb_i && wbs_cyc_i) begin
-		chip_select = 0;
+		chip_select = 8;
 		csb0_temp = ram_csb0;
    		addr0 = ram_addr0;
    		din0 = ram_din0;
