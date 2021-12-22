@@ -97,6 +97,15 @@ module openram_testchip(
    // SRAM input connections
    reg [`SELECT_SIZE-1:0]  chip_select;
 
+// Using the wishbone signals for enabling memories
+	wire ram_clk0;
+	wire ram_csb0;
+	wire ram_web0;
+	wire [`WMASK_SIZE-1:0] ram_wmask0;
+	wire [7:0] ram_addr0;
+	wire [31:0] ram_din0;
+	wire [31:0] ram_dout0;
+
 always @ (posedge clk) begin
    if(!resetn) begin
       sram_register <= {`TOTAL_SIZE{1'b0}};
@@ -120,11 +129,32 @@ always @ (posedge clk) begin
    end
 end
 
+	wishbone_wrapper WRAPPER(
+    	.wb_clk_i(wb_clk_i),
+    	.wb_rst_i(wb_rst_i),
+    	.wbs_stb_i(wbs_stb_i),
+    	.wbs_cyc_i(wbs_cyc_i),
+    	.wbs_we_i(wbs_we_i),
+    	.wbs_sel_i(wbs_sel_i),
+    	.wbs_dat_i(wbs_dat_i),
+    	.wbs_adr_i(wbs_adr_i),
+    	.wbs_ack_o(wbs_ack_o),
+    	.wbs_dat_o(wbs_dat_o),
+		// OpenRAM interface
+    	.ram_clk0(ram_clk0),       // (output) clock
+    	.ram_csb0(ram_csb0),       // (output) active low chip select
+    	.ram_web0(ram_web0),       // (output) active low write control
+    	.ram_wmask0(ram_wmask0),   // (output) write (byte) mask
+    	.ram_addr0(ram_addr0),	   // (output)
+    	.ram_din0(read_data0),	   // (input) read from sram and sent through wb 
+    	.ram_dout0(ram_din0)	   // (output) read from wb and sent to sram
+	);
 
 // Splitting register bits into fields
 always @(*) begin
 	if(wbs_stb_i && wbs_cyc_i) begin
 		chip_select = 0;
+		csb0_temp = ram_csb0;
    		addr0 = ram_addr0;
    		din0 = ram_din0;
    		web0 = ram_web0;
@@ -153,38 +183,11 @@ always @(*) begin
    	end
 end
 
-// Using the wishbone signals for enabling memories
-	wire ram_clk0;
-	wire ram_csb0;
-	wire ram_web0;
-	wire ram_wmask0;
-	wire ram_addr0;
-	wire ram_din0;
-	wire ram_dout0;
-	wishbone_wrapper WRAPPER(
-    	.wb_clk_i(wb_clk_i),
-    	.wb_rst_i(wb_rst_i),
-    	.wbs_stb_i(wbs_stb_i),
-    	.wbs_cyc_i(wbs_cyc_i),
-    	.wbs_we_i(wbs_we_i),
-    	.wbs_sel_i(wbs_sel_i),
-    	.wbs_dat_i(wbs_dat_i),
-    	.wbs_adr_i(wbs_adr_i),
-    	.wbs_ack_o(wbs_ack_o),
-    	.wbs_dat_o(wbs_dat_o),
-		// OpenRAM interface
-    	.ram_clk0(ram_clk0),       // (output) clock
-    	.ram_csb0(ram_csb0),       // (output) active low chip select
-    	.ram_web0(ram_web0),       // (output) active low write control
-    	.ram_wmask0(ram_wmask0),   // (output) write (byte) mask
-    	.ram_addr0(ram_addr0),	   // (output)
-    	.ram_din0(read_data0),	   // (input) read from sram and sent through wb 
-    	.ram_dout0(ram_din0)	   // (output) read from wb and sent to sram
-	);
 // Apply the correct CSB
 always @(*) begin
 	if(wbs_stb_i && wbs_cyc_i) begin
-		csb0 = 16'b1111111111111110;
+//		ccsb0 = {16'b111111110111111, csb0_temp};
+		csb0 = {7'b1111111, csb0_temp, 8'b11111111};
 		csb1 = 16'b1111111111111111;
 	end
 	else begin
