@@ -22,7 +22,7 @@
 // Caravel allows user project to use 0x30xx_xxxx address space on Wishbone bus
 // OpenRAM
 // 0x30c0_0000 till 30c0_03ff -> 256 Words of OpenRAM (1024 Bytes)
-#define OPENRAM_BASE_ADDRESS		0x30c00000
+#define OPENRAM_BASE_ADDRESS		0x30000000
 #define OPENRAM_SIZE_DWORDS		256ul			
 #define OPENRAM_SIZE_BYTES		(4ul * OPENRAM_SIZE_DWORDS)
 #define OPENRAM_ADDRESS_MASK		(OPENRAM_SIZE_BYTES - 1)
