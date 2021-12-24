@@ -70,7 +70,7 @@ assign wbs_or9_we_o = wbs_ufp_we_i & sram9_select;
 assign wbs_or9_sel_o = wbs_ufp_sel_i & {4{sram9_select}};
 assign wbs_or9_dat_o = wbs_ufp_dat_i & {32{sram9_select}};
 
-// HyperRAM or OpenRAM -> UFP
+// SRAM8 or SRAM9 -> UFP
 assign wbs_ufp_ack_o = (wbs_or8_ack_i & sram8_select) | (wbs_or9_ack_i & sram9_select);
 assign wbs_ufp_dat_o = (wbs_or8_dat_i & {32{sram8_select}}) | (wbs_or9_dat_i & {32{sram9_select}});
 
