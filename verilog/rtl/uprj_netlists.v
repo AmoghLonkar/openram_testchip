@@ -26,6 +26,7 @@
     `include "user_project_wrapper.v"
     `include "openram_testchip.v"
 	`include "wishbone_wrapper.v"
+	`include "wishbone_ram_mux.v"
     `include "sky130_sram_1kbyte_1rw1r_8x1024_8.v"
     `include "sky130_sram_1kbyte_1rw1r_32x256_8.v"
     `include "sky130_sram_2kbyte_1rw1r_32x512_8.v"

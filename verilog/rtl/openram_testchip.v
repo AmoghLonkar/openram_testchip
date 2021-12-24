@@ -31,6 +31,7 @@ module openram_testchip(
     		input [31:0] wbs_dat_i,
     		input [31:0] wbs_adr_i,
 			input  [`DATA_SIZE-1:0] wbs_sram8_data,
+			input  [`DATA_SIZE-1:0] wbs_sram9_data,
     		output wbs_ack_o,
     		output [31:0] wbs_dat_o,
 			// SRAM data outputs to be captured
@@ -98,14 +99,38 @@ module openram_testchip(
    // SRAM input connections
    reg [`SELECT_SIZE-1:0]  chip_select;
 
-// Using the wishbone signals for enabling memories
-	wire ram_clk0;
-	wire ram_csb0;
-	wire ram_web0;
-	wire [`WMASK_SIZE-1:0] ram_wmask0;
-	wire [7:0] ram_addr0;
-	wire [31:0] ram_din0;
-	wire [31:0] ram_dout0;
+// wires connecting sram8 wrapper to sram8 macro
+	wire ram8_clk0;
+	wire ram8_csb0;
+	wire ram8_web0;
+	wire [`WMASK_SIZE-1:0] ram8_wmask0;
+	wire [7:0] ram8_addr0;
+	wire [31:0] ram8_din0;
+	wire [31:0] ram8_dout0;
+// wires connecting sram9 wrapper to sram9 macro
+	wire ram9_clk0;
+	wire ram9_csb0;
+	wire ram9_web0;
+	wire [`WMASK_SIZE-1:0] ram9_wmask0;
+	wire [7:0] ram9_addr0;
+	wire [31:0] ram9_din0;
+	wire [31:0] ram9_dout0;
+// wires connecting between mux & sram8
+	wire wbs_or8_stb;
+	wire wbs_or8_cyc;
+	wire wbs_or8_we;
+	wire [3:0] wbs_or8_sel;
+	wire [31:0] wbs_or8_dat_i;
+	wire wbs_or8_ack;
+	wire [31:0] wbs_or8_dat_o;
+// wires connecting between mux & sram9
+	wire wbs_or9_stb;
+	wire wbs_or9_cyc;
+	wire wbs_or9_we;
+	wire [3:0] wbs_or9_sel;
+	wire [31:0] wbs_or9_dat_i;
+	wire wbs_or9_ack;
+	wire [31:0] wbs_or9_dat_o;
 
 
 always @ (posedge clk) begin
@@ -130,42 +155,114 @@ always @ (posedge clk) begin
 			sram_register[`WMASK_SIZE+1:0]};
    end
 end
-	wishbone_wrapper WRAPPER(
+
+	wishbone_ram_mux WB_RAM_MUX(
     	.wb_clk_i(wb_clk_i),
     	.wb_rst_i(wb_rst_i),
-    	.wbs_stb_i(wbs_stb_i),
-    	.wbs_cyc_i(wbs_cyc_i),
-    	.wbs_we_i(wbs_we_i),
-    	.wbs_sel_i(wbs_sel_i),
-    	.wbs_dat_i(wbs_dat_i),
+		// main wishbone signals coming here
+    	.wbs_ufp_stb_i(wbs_stb_i),
+    	.wbs_ufp_cyc_i(wbs_cyc_i),
+    	.wbs_ufp_we_i(wbs_we_i),
+    	.wbs_ufp_sel_i(wbs_sel_i),
+    	.wbs_ufp_dat_i(wbs_dat_i),
+    	.wbs_ufp_adr_i(wbs_adr_i),
+    	.wbs_ufp_ack_o(wbs_ack_o),
+    	.wbs_ufp_dat_o(wbs_dat_o),
+		// wishbone signals to sram 8
+    	.wbs_or8_stb_o(wbs_or8_stb),
+    	.wbs_or8_cyc_o(wbs_or8_cyc),
+    	.wbs_or8_we_o(wbs_or8_we),
+    	.wbs_or8_sel_o(wbs_or8_sel),
+    	.wbs_or8_dat_i(wbs_or8_dat_i),
+    	.wbs_or8_ack_i(wbs_or8_ack),
+    	.wbs_or8_dat_o(wbs_or8_dat_o),
+		// wishbone signals to sram 9
+    	.wbs_or9_stb_o(wbs_or9_stb),
+    	.wbs_or9_cyc_o(wbs_or9_cyc),
+    	.wbs_or9_we_o(wbs_or9_we),
+    	.wbs_or9_sel_o(wbs_or9_sel),
+    	.wbs_or9_dat_i(wbs_or9_dat_i),
+    	.wbs_or9_ack_i(wbs_or9_ack),
+    	.wbs_or9_dat_o(wbs_or9_dat_o)
+	);
+
+	wishbone_wrapper #(.BASE_ADDR(32'h3000_0000), .ADDR_WIDTH(8)) SRAM8_WRAPPER(
+    	.wb_clk_i(wb_clk_i),
+    	.wb_rst_i(wb_rst_i),
+    	.wbs_stb_i(wbs_or8_stb),
+    	.wbs_cyc_i(wbs_or8_cyc),
+    	.wbs_we_i(wbs_or8_we),
+    	.wbs_sel_i(wbs_or8_sel),
+    	.wbs_dat_i(wbs_or8_dat_o),
     	.wbs_adr_i(wbs_adr_i),
-    	.wbs_ack_o(wbs_ack_o),
-    	.wbs_dat_o(wbs_dat_o),
+    	.wbs_ack_o(wbs_or8_ack),
+    	.wbs_dat_o(wbs_or8_dat_i),
 		// OpenRAM interface
-    	.ram_clk0(ram_clk0),       // (output) clock
-    	.ram_csb0(ram_csb0),       // (output) active low chip select
-    	.ram_web0(ram_web0),       // (output) active low write control
-    	.ram_wmask0(ram_wmask0),   // (output) write (byte) mask
-    	.ram_addr0(ram_addr0),	   // (output)
+    	.ram_clk0(ram8_clk0),       // (output) clock
+    	.ram_csb0(ram8_csb0),       // (output) active low chip select
+    	.ram_web0(ram8_web0),       // (output) active low write control
+    	.ram_wmask0(ram8_wmask0),   // (output) write (byte) mask
+    	.ram_addr0(ram8_addr0),	   // (output)
     	.ram_din0(wbs_sram8_data),	   // (input) read from sram and sent through wb 
-    	.ram_dout0(ram_din0)	   // (output) read from wb and sent to sram
+    	.ram_dout0(ram8_din0)	   // (output) read from wb and sent to sram
+	);
+
+	wishbone_wrapper #(.BASE_ADDR(32'h3000_0400), .ADDR_WIDTH(9)) SRAM9_WRAPPER(
+    	.wb_clk_i(wb_clk_i),
+    	.wb_rst_i(wb_rst_i),
+    	.wbs_stb_i(wbs_or9_stb),
+    	.wbs_cyc_i(wbs_or9_cyc),
+    	.wbs_we_i(wbs_or9_we),
+    	.wbs_sel_i(wbs_or9_sel),
+    	.wbs_dat_i(wbs_or9_dat_o),
+    	.wbs_adr_i(wbs_adr_i),
+    	.wbs_ack_o(wbs_or9_ack),
+    	.wbs_dat_o(wbs_or9_dat_i),
+		// OpenRAM interface
+    	.ram_clk0(ram9_clk0),       // (output) clock
+    	.ram_csb0(ram9_csb0),       // (output) active low chip select
+    	.ram_web0(ram9_web0),       // (output) active low write control
+    	.ram_wmask0(ram9_wmask0),   // (output) write (byte) mask
+    	.ram_addr0(ram9_addr0),	   // (output)
+    	.ram_din0(wbs_sram9_data),	   // (input) read from sram and sent through wb 
+    	.ram_dout0(ram9_din0)	   // (output) read from wb and sent to sram
 	);
 
 // Splitting register bits into fields
 always @(*) begin
 	if(wbs_stb_i && wbs_cyc_i) begin
-		chip_select = 8;
-		csb0_temp = ram_csb0;
-   		addr0 = ram_addr0;
-   		din0 = ram_din0;
-   		web0 = ram_web0;
-   		wmask0 = ram_wmask0;
-		// dont cares for now since we are just testing single port for now
-   		addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   		din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   		csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   		web1 = sram_register[`WMASK_SIZE];
-   		wmask1 = sram_register[`WMASK_SIZE-1:0];
+		// select on the basis of strobe signals here
+		// for example:
+		// at any given time wbs_or8_stb or wbs_or9_stb will be active
+		// based on that take their values and provide to the sram control signals 
+		chip_select = 0;
+
+		if(wbs_or8_stb && !wbs_or9_stb) begin
+			csb0_temp = ram8_csb0;
+   			addr0 = ram8_addr0;
+   			din0 = ram8_din0;
+   			web0 = ram8_web0;
+   			wmask0 = ram8_wmask0;
+			// dont cares for now since we are just testing single port for now
+   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   			web1 = sram_register[`WMASK_SIZE];
+   			wmask1 = sram_register[`WMASK_SIZE-1:0];
+		end
+		else if(!wbs_or8_stb && wbs_or9_stb) begin
+			csb0_temp = ram9_csb0;
+   			addr0 = ram9_addr0;
+   			din0 = ram9_din0;
+   			web0 = ram9_web0;
+   			wmask0 = ram9_wmask0;
+			// dont cares for now since we are just testing single port for now
+   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   			web1 = sram_register[`WMASK_SIZE];
+   			wmask1 = sram_register[`WMASK_SIZE-1:0];
+		end
 	end
 	else begin
    		chip_select = sram_register[`TOTAL_SIZE-1:`TOTAL_SIZE-`SELECT_SIZE];
@@ -187,8 +284,12 @@ end
 // Apply the correct CSB
 always @(*) begin
 	if(wbs_stb_i && wbs_cyc_i) begin
-//		ccsb0 = {16'b111111110111111, csb0_temp};
-		csb0 = {7'b1111111, csb0_temp, 8'b11111111};
+		if(wbs_or8_stb && !wbs_or9_stb) begin
+			csb0 = {7'b1111111, csb0_temp, 8'b11111111};
+		end
+		else if(!wbs_or8_stb && wbs_or9_stb) begin
+			csb0 = {6'b111111, csb0_temp, 9'b111111111};
+		end
 		csb1 = 16'b1111111111111111;
 	end
 	else begin
