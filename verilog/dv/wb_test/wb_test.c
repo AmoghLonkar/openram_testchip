@@ -22,20 +22,19 @@
 // Caravel allows user project to use 0x30xx_xxxx address space on Wishbone bus
 // OpenRAM
 // 0x30c0_0000 till 30c0_03ff -> 256 Words of OpenRAM (1024 Bytes)
-#define OPENRAM_BASE_ADDRESS		0x30000000
-#define OPENRAM_SIZE_DWORDS		256ul			
-#define OPENRAM_SIZE_BYTES		(4ul * OPENRAM_SIZE_DWORDS)
-#define OPENRAM_ADDRESS_MASK		(OPENRAM_SIZE_BYTES - 1)
-#define OPENRAM_MEM(offset)		(*(volatile uint32_t*)(OPENRAM_BASE_ADDRESS + (offset & OPENRAM_ADDRESS_MASK)))
+#define SRAM8_BASE_ADDRESS		0x30000000
+#define SRAM8_SIZE_DWORDS		256ul			
+#define SRAM8_SIZE_BYTES		(4ul * SRAM8_SIZE_DWORDS)
+#define SRAM8_ADDRESS_MASK		(SRAM8_SIZE_BYTES - 1)
+#define SRAM8_MEM(offset)		(*(volatile uint32_t*)(SRAM8_BASE_ADDRESS + (offset & SRAM8_ADDRESS_MASK)))
+
+#define SRAM9_BASE_ADDRESS		0x30000400
+#define SRAM9_SIZE_DWORDS		512ul			
+#define SRAM9_SIZE_BYTES		(4ul * SRAM9_SIZE_DWORDS)
+#define SRAM9_ADDRESS_MASK		(SRAM9_SIZE_BYTES - 1)
+#define SRAM9_MEM(offset)		(*(volatile uint32_t*)(SRAM9_BASE_ADDRESS + (offset & SRAM9_ADDRESS_MASK)))
 
 
-// Generates 32bits wide value out of address, not random
-unsigned long generate_value(unsigned long address)
-{
-	return ((~address & OPENRAM_ADDRESS_MASK) << 19) + 
-		((~address & OPENRAM_ADDRESS_MASK) << 12) ^
-		((~address & OPENRAM_ADDRESS_MASK) << 2);
-}
 
 void main()
 {
@@ -66,11 +65,13 @@ void main()
 	// all of the GPIO pins to be used for user functions.
 
 
-	// All GPIO pins are configured to be output
-	// Used to flad the start/end of a test 
+	// GPIO pin 28 Used to flag the start/end of a test 
+	// GPIO pin 29 Used to indicate error in writing/reading sram 8
+	// GPIO pin 30 Used to indicate error in writing/reading sram 9
 
 	reg_mprj_io_28 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_29 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_30 = GPIO_MODE_MGMT_STD_OUTPUT;
 	/* Apply configuration */
 	reg_mprj_xfer = 1;
 	while (reg_mprj_xfer == 1);
@@ -79,34 +80,50 @@ void main()
 	reg_mprj_datal = 0x10000000;
 
 
-	// configuring them as output so that we can provide a stable de-asserted reset through caravel la pin 126	
-	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
-	// writing 0 so that la pin 126 gets 0 and de-activates the reset instead of keeping it dont care.
-	reg_la3_data = 0x00000000;
-
-	OPENRAM_MEM(0) = 0xdeadbeef;
-	OPENRAM_MEM(4) = 0xdeadbee0;
-	OPENRAM_MEM(8) = 0xffffffff;
-	OPENRAM_MEM(12) = 0xdeaddead;
+	SRAM8_MEM(0) = 0xdeadbeef;
+	SRAM9_MEM(0) = 0xbeefdead;
+	SRAM8_MEM(4) = 0xdeadbee0;
+	SRAM9_MEM(4) = 0xbee0dead;
+	SRAM8_MEM(8) = 0xffffffff;
+	SRAM9_MEM(8) = 0x12345678;
+	SRAM8_MEM(12) = 0xdeaddead;
+	SRAM9_MEM(12) = 0x10101010;
 	// this is not working because the data is correct but sp rams send an additional x which makes this fail
-	if (OPENRAM_MEM(0) != 0xdeadbeef) {
+	if (SRAM8_MEM(0) != 0xdeadbeef) {
 		// send an error signal to the testbench
 		reg_mprj_datal = 0x20000000;
 	}
-	if (OPENRAM_MEM(4) != 0xdeadbee0) {
+	if (SRAM8_MEM(4) != 0xdeadbee0) {
 		// send an error signal to the testbench
 		reg_mprj_datal = 0x20000000;
 	}
-	if (OPENRAM_MEM(8) != 0xffffffff) {
+	if (SRAM8_MEM(8) != 0xffffffff) {
 		// send an error signal to the testbench
 		reg_mprj_datal = 0x20000000;
 	}
-	if (OPENRAM_MEM(12) != 0xdeaddead) {
+	if (SRAM8_MEM(12) != 0xdeaddead) {
 		// send an error signal to the testbench
 		reg_mprj_datal = 0x20000000;
 	}
 
 
+	// this is not working because the data is correct but sp rams send an additional x which makes this fail
+	if (SRAM9_MEM(0) != 0xbeefdead) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x40000000;
+	}
+	if (SRAM9_MEM(4) != 0xbee0dead) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x40000000;
+	}
+	if (SRAM9_MEM(8) != 0x12345678) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x40000000;
+	}
+	if (SRAM9_MEM(12) != 0x10101010) {
+		// send an error signal to the testbench
+		reg_mprj_datal = 0x40000000;
+	}
 
 	reg_mprj_datal = 0x00000000;			
 }
