@@ -91,8 +91,23 @@ module wb_test_tb;
 		$display($time, " Data mismatch while reading data from SRAM 9!"); 
 	end
 
+	initial begin
+		wait (mprj_io_31 == 1'b1);
+		$display($time, " Data mismatch while reading data from SRAM 10!"); 
+	end
+
+	initial begin
+		wait (mprj_io_32 == 1'b1);
+		$display($time, " Data mismatch while reading data from SRAM 11!"); 
+	end
+
+	initial begin
+		wait (mprj_io_33 == 1'b1);
+		$display($time, " Data mismatch while reading data from SRAM 12!"); 
+	end
+
    initial begin
-      #5000000
+      #1000000
       $display("Timeout");
       $finish;
    end
