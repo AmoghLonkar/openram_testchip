@@ -160,6 +160,9 @@ module user_project_wrapper #(
     			  .wbs_dat_o(wbs_dat_o),
 				  .wbs_sram8_data(sram8_dout0),
 				  .wbs_sram9_data(sram9_dout0),
+				  .wbs_sram10_data(sram10_dout0),
+				  .wbs_sram11_data(sram11_dout0),
+				  .wbs_sram12_data(sram12_dout0),
 				  // Shared control/data to the SRAMs
 				  .addr0(addr0),
 				  .din0(din0),
