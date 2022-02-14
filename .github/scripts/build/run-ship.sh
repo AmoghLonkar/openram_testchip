@@ -16,21 +16,23 @@
 
 export UPRJ_ROOT=$(pwd)
 cd ..
-export PDK_ROOT=$(pwd)/pdks
 export CARAVEL_ROOT=$(pwd)/caravel
 export IMAGE_NAME=efabless/openlane:$OPENLANE_TAG
+export PDK_ROOT=$(pwd)/pdks
 
-cd $UPRJ_ROOT
+cd $UPRJ_ROOT || exit
 
 # Install full version of caravel
-git clone https://github.com/efabless/caravel --branch develop --depth 1 $CARAVEL_ROOT
+git clone --depth=1 https://github.com/efabless/caravel $CARAVEL_ROOT
 
-docker run -v $UPRJ_ROOT:$UPRJ_ROOT -v $PDK_ROOT:$PDK_ROOT -v $CARAVEL_ROOT:$CARAVEL_ROOT -e UPRJ_ROOT=$UPRJ_ROOT -e PDK_ROOT=$PDK_ROOT -e CARAVEL_ROOT=$CARAVEL_ROOT -u $(id -u $USER):$(id -g $USER) $IMAGE_NAME bash -c "cd $CARAVEL_ROOT; make uncompress; cd $UPRJ_ROOT; make ship;"
+make install_mcw
+
+docker run -v $UPRJ_ROOT:$UPRJ_ROOT -v $PDK_ROOT:$PDK_ROOT -v $CARAVEL_ROOT:$CARAVEL_ROOT -e UPRJ_ROOT=$UPRJ_ROOT -e PDK_ROOT=$PDK_ROOT -e CARAVEL_ROOT=$CARAVEL_ROOT -u $(id -u $USER):$(id -g $USER) $IMAGE_NAME bash -c "cd $CARAVEL_ROOT; make uncompress; cd $UPRJ_ROOT; make -f $CARAVEL_ROOT/Makefile ship;"
 
 SHIP_FILE=$UPRJ_ROOT/gds/caravel.gds
 
 if test -f "$SHIP_FILE"; then
-    exit 0
+  exit 0
 else
-    exit 2
+  exit 2
 fi
