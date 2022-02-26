@@ -1,4 +1,3 @@
-`include "openram_defines.v"
 
 module openram_testchip(
 `ifdef USE_POWER_PINS

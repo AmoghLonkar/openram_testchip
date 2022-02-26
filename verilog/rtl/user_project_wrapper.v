@@ -14,7 +14,6 @@
 // SPDX-License-Identifier: Apache-2.0
 
 `default_nettype none
-`include "openram_defines.v"
 /*
  *-------------------------------------------------------------
  *
