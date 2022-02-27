@@ -16,8 +16,8 @@
  */
 
 // This include is relative to $CARAVEL_PATH (see Makefile)
-#include "verilog/dv/caravel/defs.h"
-#include "verilog/dv/caravel/stub.c"
+#include <defs.h>
+#include <stub.c>
 /*
 	LA Test:
 		- Reads to and writes from each SRAM
@@ -68,10 +68,10 @@ int i;
 
 void write_dp_sram(int sel) {
 	// Configure LA probes as outputs from the cpu
-	reg_la0_oenb = reg_la0_iena = 0x00000000;    // [31:0]
-	reg_la1_oenb = reg_la1_iena = 0x00000000;    // [63:32]
-	reg_la2_oenb = reg_la2_iena = 0x00000000;    // [95:64]
-	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
+	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
+	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
+	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
+	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
 
 	// Write 1 to address 1
 	// Send input packet
@@ -129,25 +129,24 @@ void read_dp_sram(int sel){
 
 	// Read from the LA
 	// This will trigger a sample of the LA bits to read
-	// Configure LA probes as outputs from the cpu
-	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
-	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
-	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
-	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
+	// Configure LA probes as inputs to the cpu
+	reg_la0_oenb = reg_la0_iena = 0x00000000;    // [31:0]
+	reg_la1_oenb = reg_la1_iena = 0x00000000;    // [63:32]
+	reg_la2_oenb = reg_la2_iena = 0x00000000;    // [95:64]
+	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
 
-	reg_la_sample = 1;
-	// Now read them
-	if(reg_la0_data != 0x00000050){
-		reg_mprj_datal = 0x00000001 | 1 << (sel + 1);
+	//// Now read them
+	if(reg_la0_data_in != 0x00000050){
+		reg_mprj_datal = 0x08000000 << sel;
 	}
 }
 
 void write_sp_sram(int sel) {
 	// Configure LA probes as outputs from the cpu
-	reg_la0_oenb = reg_la0_iena = 0x00000000;    // [31:0]
-	reg_la1_oenb = reg_la1_iena = 0x00000000;    // [63:32]
-	reg_la2_oenb = reg_la2_iena = 0x00000000;    // [95:64]
-	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
+	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
+	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
+	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
+	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
 
 	// Write DEADBEEF to address 1
 	// Send input packet
@@ -192,25 +191,33 @@ void read_sp_sram(int sel){
 	// Read from the LA
 	// This will trigger a sample of the LA bits to read
 	// Configure LA probes as outputs from the cpu
-	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
-	reg_la1_oenb = reg_la1_iena = 0xFFFFFFFF;    // [63:32]
-	reg_la2_oenb = reg_la2_iena = 0xFFFFFFFF;    // [95:64]
-	reg_la3_oenb = reg_la3_iena = 0xFFFFFFFF;    // [127:96]
+	reg_la0_oenb = reg_la0_iena = 0x00000000;    // [31:0]
+	reg_la1_oenb = reg_la1_iena = 0x00000000;    // [63:32]
+	reg_la2_oenb = reg_la2_iena = 0x00000000;    // [95:64]
+	reg_la3_oenb = reg_la3_iena = 0x00000000;    // [127:96]
 
-	reg_la_sample = 1;
 	// Now read them
-	if(reg_la2_data != 0x1DEADBEE){
-		reg_mprj_datal = 0x00000001 | 1 << (sel - 2);
+	if(reg_la2_data_in != 0x1DEADBEE){
+		reg_mprj_datah = 0x00000004 << (sel - 8);
 	}
 }
 
 
 void main()
 {
-	reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
+	 reg_spi_enable = 1;
+	 //reg_spimaster_cs = 0x00000;
+
+	 //reg_spimaster_control = 0x0801;
+
+	// reg_spimaster_control = 0xa002;	// Enable, prescaler = 2,
+	// old version. This errors out now, there is no spimaster config register
+	//reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
                                         // connect to housekeeping SPI
 
 	// This is to signal when the code is ready to the test bench
+	reg_mprj_io_26 = GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_27 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_28 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_29 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_30 = GPIO_MODE_MGMT_STD_OUTPUT;
@@ -226,8 +233,8 @@ void main()
 	reg_mprj_xfer = 1;
 	while (reg_mprj_xfer == 1);
 	
-	// To start, set pin 28 to 1
-	reg_mprj_datal = 0x10000000;
+	// To start, set pin 26 to 1
+	reg_mprj_datal = 0x04000000;
 	/* DUAL PORT MEMORIES */
 
 	//SRAM 0
@@ -235,18 +242,18 @@ void main()
 	read_dp_sram(0);
 
         //SRAM 1
-        write_dp_sram(1);
-        read_dp_sram(1);
+    write_dp_sram(1);
+    read_dp_sram(1);
 
-	// SRAM 2
+  // SRAM 2
 	write_dp_sram(2);
 	read_dp_sram(2);
 
-	// SRAM 3
+  // SRAM 3
 	write_dp_sram(3);
 	read_dp_sram(3);
 
-        // SRAM 4
+      // SRAM 4
 	write_dp_sram(4);
 	read_dp_sram(4);
 
@@ -260,7 +267,7 @@ void main()
 	write_sp_sram(9);
 	read_sp_sram(9);
 
-	// SRAM 10
+  // SRAM 10
 	write_sp_sram(10);
 	read_sp_sram(10);
 

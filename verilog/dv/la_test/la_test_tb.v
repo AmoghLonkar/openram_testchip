@@ -17,9 +17,9 @@
 
 `timescale 1 ns / 1 ps
 
-`include "uprj_netlists.v"
-`include "caravel_netlists.v"
-`include "spiflash.v"
+//`include "uprj_netlists.v"
+//`include "caravel_netlists.v"
+//`include "spiflash.v"
 
 module la_test_tb;
 	reg clock;
@@ -30,6 +30,8 @@ module la_test_tb;
 
 	wire gpio;
 	wire [37:0] mprj_io;
+	wire mprj_io_26 = mprj_io[26];
+	wire mprj_io_27 = mprj_io[27];
 	wire mprj_io_28 = mprj_io[28];
 	wire mprj_io_29 = mprj_io[29];
 	wire mprj_io_30 = mprj_io[30];
@@ -68,13 +70,13 @@ module la_test_tb;
 	assign mprj_io[21] = global_csb;
 	initial begin
 
-		wait(mprj_io_28 == 1'b1);
+		wait(mprj_io_26 == 1'b1);
 		$display($time, " Saw bit 1: VCD starting");
 
 		$dumpfile("la_test.vcd");
 		$dumpvars(0, la_test_tb);
 
-		wait(mprj_io_28 == 1'b0);
+		wait(mprj_io_26 == 1'b0);
 		$display($time, " Saw bit 0: VCD stopping");
 		$display("Done with tests");
 		$finish;
@@ -82,28 +84,30 @@ module la_test_tb;
 	end // initial begin
 	
 	initial begin
-		wait (mprj_io_29 == 1'b1);
+		wait (mprj_io_27 == 1'b1);
 		$display($time, " Data mismatch while reading byte from SRAM 0!"); 
 	end
 	
 	initial begin
-		wait (mprj_io_30 == 1'b1);
+		wait (mprj_io_28 == 1'b1);
 		$display($time, " Data mismatch while reading byte from SRAM 1!"); 
 	end
 		
 	initial begin 
-		wait (mprj_io_31 == 1'b1);
+		wait (mprj_io_29 == 1'b1);
 		$display($time, " Data mismatch while reading byte from SRAM 2!"); 
 	end
 
 	initial begin
-		wait (mprj_io_32 == 1'b1);
+		wait (mprj_io_30 == 1'b1);
 		$display($time, " Data mismatch while reading byte from SRAM 3!"); 
 	end
 
 	initial begin
-		wait (mprj_io_33 == 1'b1);
+		wait (mprj_io_31 == 1'b1);
 		$display($time, " Data mismatch while reading byte from SRAM 4!"); 
+	// by default this io is high in mpw5 (Do not know why?)
+//		wait (mprj_io_33 == 1'b1);
 	end
 
 	initial begin
@@ -127,7 +131,7 @@ module la_test_tb;
 	end
 
    initial begin
-      #5000000
+      #10000000
       $display("Timeout");
       $finish;
    end
