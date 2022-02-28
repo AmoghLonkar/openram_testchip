@@ -34,6 +34,8 @@ set ::env(DESIGN_NAME) user_project_wrapper
 set ::env(VERILOG_FILES) "\
 	$::env(CARAVEL_ROOT)/verilog/rtl/defines.v \
 	$script_dir/../../verilog/rtl/user_project_wrapper.v \
+	$script_dir/../../verilog/rtl/wishbone_wrapper.v \
+	$script_dir/../../verilog/rtl/wishbone_ram_mux.v \
 	$script_dir/../../verilog/rtl/openram_testchip.v"
 
 ## Clock configurations
