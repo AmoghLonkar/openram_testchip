@@ -28,7 +28,7 @@
  *
  *-------------------------------------------------------------
  */
-
+ `include "openram_defines.v"
 module user_project_wrapper #(
     parameter BITS = 32
 ) (
