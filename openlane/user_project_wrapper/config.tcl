@@ -53,6 +53,7 @@ set ::env(MACRO_PLACEMENT_CFG) $script_dir/macro.cfg
 ### Black-box verilog and views
 set ::env(VERILOG_FILES_BLACKBOX) "\
 	$script_dir/../../caravel/verilog/rtl/defines.v \
+	$script_dir/../../verilog/rtl/openram_defines.v \
 	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_32x256_8.v \
 	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_8x1024_8.v \
 	$script_dir/../../verilog/rtl/sky130_sram_2kbyte_1rw1r_32x512_8.v \
