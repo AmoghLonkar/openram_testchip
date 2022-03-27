@@ -538,7 +538,7 @@ rect 580970 -960 581082 480
 rect 582166 -960 582278 480
 rect 583362 -960 583474 480
 << obsm2 >>
-rect 572 703464 8030 703610
+rect 570 703464 8030 703610
 rect 8254 703464 24222 703610
 rect 24446 703464 40414 703610
 rect 40638 703464 56698 703610
@@ -4490,6 +4490,92 @@ rlabel metal4 s 567234 -5734 567854 709670 6 vssa1
 port 536 nsew ground input
 rlabel metal4 s 590110 -5734 590730 709670 6 vssa1
 port 536 nsew ground input
+rlabel metal5 s -6806 28306 590730 28926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 64306 590730 64926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 100306 590730 100926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 136306 590730 136926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 172306 590730 172926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 208306 590730 208926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 244306 590730 244926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 280306 590730 280926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 316306 590730 316926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 352306 590730 352926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 388306 590730 388926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 424306 590730 424926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 460306 590730 460926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 496306 590730 496926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 532306 590730 532926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 568306 590730 568926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 604306 590730 604926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 640306 590730 640926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 676306 590730 676926 6 vssa1
+port 536 nsew ground input
+rlabel metal5 s -6806 709050 590730 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 243234 -5734 243854 336000 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 279234 -5734 279854 336000 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 315234 -5734 315854 336000 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 351234 -5734 351854 336000 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 387234 -5734 387854 336000 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s -6806 -5734 -6186 709670 4 vssa1
+port 536 nsew ground input
+rlabel metal4 s 27234 -5734 27854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 63234 -5734 63854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 99234 -5734 99854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 135234 -5734 135854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 171234 -5734 171854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 207234 -5734 207854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 243234 460000 243854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 279234 460000 279854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 315234 460000 315854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 351234 460000 351854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 387234 460000 387854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 423234 -5734 423854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 459234 -5734 459854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 495234 -5734 495854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 531234 -5734 531854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 567234 -5734 567854 709670 6 vssa1
+port 536 nsew ground input
+rlabel metal4 s 590110 -5734 590730 709670 6 vssa1
+port 536 nsew ground input
 rlabel metal5 s -8726 -7654 592650 -7034 8 vssa2
 port 537 nsew ground input
 rlabel metal5 s -8726 32026 592650 32646 6 vssa2
@@ -5191,8 +5277,8 @@ port 644 nsew signal input
 rlabel metal2 s 6430 -960 6542 480 8 wbs_we_i
 port 645 nsew signal input
 << properties >>
-string LEFclass BLOCK
 string FIXED_BBOX 0 0 584000 704000
+string LEFclass BLOCK
 string LEFview TRUE
 string GDS_FILE /home/mkhan33/openram_testchip/openlane/user_project_wrapper/runs/user_project_wrapper/results/magic/user_project_wrapper.gds
 string GDS_END 91174726

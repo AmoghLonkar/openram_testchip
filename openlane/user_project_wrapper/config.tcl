@@ -89,7 +89,8 @@ set ::env(EXTRA_GDS_FILES) "\
 	$script_dir/../../gds/sky130_sram_4kbyte_1rw_64x512_8.gds \
 	$script_dir/../../gds/sky130_sram_8kbyte_1rw_64x1024_8.gds"
 
-set ::env(GLB_RT_MAXLAYER) 5
+# set ::env(GLB_RT_MAXLAYER) 5
+set ::env(RT_MAX_LAYER) {met4}
 
 set ::env(FP_PDN_CHECK_NODES) 0
 # Power config
