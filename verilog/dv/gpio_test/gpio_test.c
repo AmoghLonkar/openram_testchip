@@ -50,8 +50,6 @@ void main()
 //	reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
                                         // connect to housekeeping SPI
 
-	// This is to signal when the code is done to the test bench
-	reg_mprj_io_0 = GPIO_MODE_MGMT_STD_OUTPUT;
 
 	reg_mprj_io_15 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
 	reg_mprj_io_16 =  GPIO_MODE_USER_STD_INPUT_NOPULL;
@@ -64,7 +62,8 @@ void main()
 	// Configure Pin 22 as user output
 	// Observe counter value in the testbench
 	reg_mprj_io_22 =  GPIO_MODE_USER_STD_OUTPUT;
-
+	reg_mprj_io_26 =  GPIO_MODE_MGMT_STD_OUTPUT;
+	reg_mprj_io_27 =  GPIO_MODE_MGMT_STD_INPUT_NOPULL;
 
 	// Configure LA probes as outputs from the cpu
 	reg_la0_oenb = reg_la0_iena = 0xFFFFFFFF;    // [31:0]
@@ -80,7 +79,11 @@ void main()
 	reg_mprj_xfer = 1;
 	while (reg_mprj_xfer == 1);
 
-	// Set bit 0 when done
-	reg_mprj_datal = 0x00000001;
 
+	// Set bit 26 when done
+	reg_mprj_datal = 0x04000000;
+	while(1) {
+		if (reg_mprj_io_27 == 1)
+			break;
+	}
 }
