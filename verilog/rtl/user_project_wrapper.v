@@ -93,7 +93,12 @@ module user_project_wrapper #(
    wire [`MAX_CHIPS-1:0]  csb0;
    wire [`MAX_CHIPS-1:0]  csb1;
 
-   wire [1:0]    in_select = {io_in[23],io_in[16]};
+   // specifies whether to use wishbone interface or gpio/la mode
+   // 1 -> wishbone
+   // 0 -> gpio/la
+   wire 	mode_select = io_in[14];
+
+   wire [1:0]    clk_select = {io_in[23],io_in[16]};
    wire     gpio_resetn = io_in[15];
    wire     gpio_clk = io_in[17];
    wire     gpio_scan = io_in[19];
@@ -116,7 +121,7 @@ module user_project_wrapper #(
    // Selecting clock pin
    reg clk;
    always @(*) begin
-	  case (in_select)
+	  case (clk_select)
 	  	2'b00 : clk = la_clk;
 		2'b01 : clk = gpio_clk;
 		2'b10 : clk = wb_clk_i;
@@ -135,6 +140,7 @@ module user_project_wrapper #(
 				  .resetn(rstn),
 				  .clk(clk),
 				  .global_csb(global_csb),
+				  .mode_select(mode_select),
 				  // gpio related control signals
 				  .gpio_scan(gpio_scan),
 				  .gpio_sram_load(gpio_sram_load),
