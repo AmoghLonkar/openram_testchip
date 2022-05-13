@@ -78,17 +78,15 @@ void main()
 	   enabling just one of them or none of them causes
 	   the simulation to run infinitely and stopping after
 	   the timeout number of cycles */
+
+
 	reg_spi_enable = 1;
 	reg_wb_enable = 1;
-//	reg_spimaster_config = 0xa002;	// Enable, prescaler = 2,
-                                        // connect to housekeeping SPI
-
-	// Connect the housekeeping SPI to the SPI master
-	// so that the CSB line is not left floating.  This allows
-	// all of the GPIO pins to be used for user functions.
 
 
-	// GPIO pin 28 Used to flag the start/end of a test 
+
+
+	// GPIO pin 27 Used to flag the start/end of a test 
 	// GPIO pin 29 Used to indicate error in writing/reading sram 8
 	// GPIO pin 30 Used to indicate error in writing/reading sram 9
 
