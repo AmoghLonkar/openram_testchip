@@ -30,7 +30,7 @@ module gpio_test_tb;
 
     	wire gpio;
     	wire [37:0] mprj_io;
-        wire mprj_io_0 = mprj_io[0];
+        wire mprj_io_26 = mprj_io[26];
 
 	// External clock is used by default.  Make this artificially fast for the
 	// simulation.  Normally this would be a slow clock and the digital PLL
@@ -49,8 +49,10 @@ module gpio_test_tb;
 	reg gpio_sram_load;
 	reg global_csb;
 	reg gpio_in;
+	reg done;
         wire gpio_out = mprj_io[22];
 
+	assign mprj_io[14] = 1'b0; // gpio/la test mode
 	assign mprj_io[15] = 1'b1; // reset
 	assign mprj_io[16] = 1'b1; // in_select
 	assign mprj_io[23] = 1'b0; // in_select
@@ -59,6 +61,7 @@ module gpio_test_tb;
 	assign mprj_io[19] = gpio_scan;
 	assign mprj_io[20] = gpio_sram_load;
 	assign mprj_io[21] = global_csb;
+	assign mprj_io[27] = done;
 
 	reg [111:0] in_data;
 	reg [111:0] out_data;
@@ -153,21 +156,22 @@ module gpio_test_tb;
 
 	initial begin
 
-            wait(mprj_io_0 == 1'b1);
-            $display($time, " Saw bit 0: VCD starting");
+            wait(mprj_io_26 == 1'b1);
+            $display($time, " Saw bit 1: VCD starting");
 
 		$dumpfile("gpio_test.vcd");
 		$dumpvars(0, gpio_test_tb);
 
+		done = 0;
 		global_csb = 1;
 
 	   # 100;
 
-
 		//Testing 32B Dual Port Memories
 		for(i = 0; i < 5; i = i + 1) begin
 		   // write 1 to address 1
-		   write_sram(i,
+		   write_sram(
+				  i,
 			      1'b0,
 			      1'b0,
 			      16'd1,
@@ -178,7 +182,8 @@ module gpio_test_tb;
 			      32'd0);
 
 		   // write i^3 to address 2
-		   write_sram(i,
+		   write_sram(
+				  i,
 			      1'b0,
 			      1'b0,
 			      16'd2,
@@ -189,7 +194,8 @@ module gpio_test_tb;
 			      32'd0);
 
 		   // read address 1 and 2
-		   read_sram(i,
+		   read_sram(
+				 i,
 			     1'b0,
 			     1'b1,
 			     16'd1,
@@ -204,7 +210,7 @@ module gpio_test_tb;
 		end
 
 		//Testing 32B Single Port Memories
-		for(i = 8; i < 12; i = i + 1) begin
+		for(i = 8; i < 13; i = i + 1) begin
 
 		   // write 1 to address 1
 		   write_sram(i,
@@ -230,6 +236,8 @@ module gpio_test_tb;
 
 		end
 
+		done = 1;
+		
 	   $display("Done with tests");
 
 		#25; $finish;
@@ -240,7 +248,7 @@ module gpio_test_tb;
 		CSB  <= 1'b1;		// Force CSB high
 		#2000;
 		RSTB <= 1'b1;	    	// Release reset
-		#170000;
+		#300000;
 		CSB = 1'b0;		// CSB can be released
 	end
 
@@ -269,6 +277,8 @@ module gpio_test_tb;
 	wire USER_VDD3V3 = power3;
 	wire USER_VDD1V8 = power4;
 	wire VSS = 1'b0;
+
+	assign mprj_io[3] = 1;  // Force CSB high.
 
 	caravel uut (
 		.vddio	  (VDD3V3),
