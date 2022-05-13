@@ -17,10 +17,6 @@
 
 `timescale 1 ns / 1 ps
 
-//`include "uprj_netlists.v"
-//`include "caravel_netlists.v"
-//`include "spiflash.v"
-
 module la_test_tb;
 	reg clock;
 	reg RSTB;
@@ -47,6 +43,9 @@ module la_test_tb;
 	// simulation.  Normally this would be a slow clock and the digital PLL
 	// would be the fast clock.
 
+	// setting this pin makes the CSB in a known state causing no Xs in GL simulation
+	assign	mprj_io[3] = 1'b1;
+
 	always #12.5 clock <= (clock === 1'b0);
 
 	initial begin
@@ -59,6 +58,7 @@ module la_test_tb;
 	wire gpio_in = 1'b0;
 	wire gpio_out = mprj_io[22];
 
+	assign mprj_io[14] = 1'b0; // gpio/la test mode 
 	assign mprj_io[15] = 1'b1; // resetn
 	// assigning `b00 to pin 16 and 23 enables the clock from la
 	assign mprj_io[16] = 1'b0; // in_select[0]
