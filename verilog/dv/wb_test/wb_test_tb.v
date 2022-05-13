@@ -42,6 +42,9 @@ module wb_test_tb;
 	wire mprj_io_36 = mprj_io[36];
 	wire mprj_io_37 = mprj_io[37];
 
+	// setting this pin makes the CSB in a known state causing no Xs in GL simulation
+	assign	mprj_io[3] = 1'b1;
+
 	// External clock is used by default.  Make this artificially fast for the
 	// simulation.  Normally this would be a slow clock and the digital PLL
 	// would be the fast clock.
@@ -58,10 +61,11 @@ module wb_test_tb;
 	wire gpio_in = 1'b0;
 	wire gpio_out = mprj_io[22];
 
+	assign mprj_io[14] = 1'b1; // wishbone mode
 	assign mprj_io[15] = 1'b1; // resetn
 	// assigning `b10 to pin 23 and 16 enables the clock from wishbone
-	assign mprj_io[16] = 1'b0; // in_select[0]
-	assign mprj_io[23] = 1'b1; // in_select[1]
+	assign mprj_io[16] = 1'b0; // clk_select[0]
+	assign mprj_io[23] = 1'b1; // clk_select[1]
 	assign mprj_io[17] = gpio_clk;
 	assign mprj_io[18] = gpio_in;
 	assign mprj_io[19] = gpio_scan;
@@ -69,14 +73,17 @@ module wb_test_tb;
 	assign mprj_io[21] = global_csb;
 	initial begin
 
-		wait(mprj_io_27 == 1'b1);
-		$display($time, " Saw bit 1: VCD starting");
-
 		$dumpfile("wb_test.vcd");
 		$dumpvars(0, wb_test_tb);
+	end
+
+	initial begin
+		wait(mprj_io_27 == 1'b1);
+		$display($time, "Saw bit 1: test bench starting");
+
 
 		wait(mprj_io_27 == 1'b0);
-		$display($time, " Saw bit 0: VCD stopping");
+		$display($time, " Saw bit 0: testbench worked");
 		$display("Done with tests");
 		$finish;
 
@@ -126,7 +133,7 @@ module wb_test_tb;
 		CSB  <= 1'b1;		// Force CSB high
 		#2000;
 		RSTB <= 1'b1;	    	// Release reset
-		#170000;
+		#300000;
 		CSB = 1'b0;		// CSB can be released
 	end
 
@@ -150,37 +157,43 @@ module wb_test_tb;
 	wire flash_io0;
 	wire flash_io1;
 
-	wire VDD3V3 = power1;
-	wire VDD1V8 = power2;
-	wire USER_VDD3V3 = power3;
-	wire USER_VDD1V8 = power4;
-	wire VSS = 1'b0;
+
+	wire VDD3V3;
+	wire VDD1V8;
+	wire VSS;
+	
+	assign VDD3V3 = power1;
+	assign VDD1V8 = power2;
+	assign VSS = 1'b0;
 
 	caravel uut (
 		.vddio	  (VDD3V3),
+		.vddio_2  (VDD3V3),
 		.vssio	  (VSS),
+		.vssio_2  (VSS),
 		.vdda	  (VDD3V3),
 		.vssa	  (VSS),
 		.vccd	  (VDD1V8),
 		.vssd	  (VSS),
-		.vdda1    (USER_VDD3V3),
-		.vdda2    (USER_VDD3V3),
+		.vdda1    (VDD3V3),
+		.vdda1_2  (VDD3V3),
+		.vdda2    (VDD3V3),
 		.vssa1	  (VSS),
+		.vssa1_2  (VSS),
 		.vssa2	  (VSS),
-		.vccd1	  (USER_VDD1V8),
-		.vccd2	  (USER_VDD1V8),
+		.vccd1	  (VDD1V8),
+		.vccd2	  (VDD1V8),
 		.vssd1	  (VSS),
 		.vssd2	  (VSS),
-		.clock	  (clock),
+		.clock    (clock),
 		.gpio     (gpio),
-        	.mprj_io  (mprj_io),
+		.mprj_io  (mprj_io),
 		.flash_csb(flash_csb),
 		.flash_clk(flash_clk),
 		.flash_io0(flash_io0),
 		.flash_io1(flash_io1),
 		.resetb	  (RSTB)
 	);
-
 	spiflash #(
 		.FILENAME("wb_test.hex")
 	) spiflash (
