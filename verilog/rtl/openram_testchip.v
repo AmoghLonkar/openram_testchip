@@ -12,6 +12,7 @@ module openram_testchip(
 `endif
 			input         resetn,
 			input         clk,
+			input 		  mode_select,
 			input         la_in_load,
 			input         la_sram_load,
 			input  [`TOTAL_SIZE-1:0] la_data_in,
@@ -366,81 +367,113 @@ end
 
 // Splitting register bits into fields
 always @(*) begin
-	if(wbs_stb_i && wbs_cyc_i) begin
-		// select on the basis of strobe signals here
-		// for example:
-		// at any given time wbs_or8_stb or wbs_or9_stb will be active
-		// based on that take their values and provide to the sram control signals 
-		chip_select = 0;
+	if (mode_select) begin
+		if(wbs_stb_i && wbs_cyc_i) begin
+			// select on the basis of strobe signals here
+			// for example:
+			// at any given time wbs_or8_stb or wbs_or9_stb will be active
+			// based on that take their values and provide to the sram control signals 
+			chip_select = 0;
 
-		if(wbs_or8_stb && !wbs_or9_stb) begin
-			csb0_temp = ram8_csb0;
-   			addr0 = ram8_addr0;
-   			din0 = ram8_din0;
-   			web0 = ram8_web0;
-   			wmask0 = ram8_wmask0;
-			// dont cares for now since we are just testing single port for now
+			if(wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0_temp = ram8_csb0;
+   				addr0 = ram8_addr0;
+   				din0 = ram8_din0;
+   				web0 = ram8_web0;
+   				wmask0 = ram8_wmask0;
+				// dont cares for now since we are just testing single port for now
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+			else if(!wbs_or8_stb && wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0_temp = ram9_csb0;
+   				addr0 = ram9_addr0;
+   				din0 = ram9_din0;
+   				web0 = ram9_web0;
+   				wmask0 = ram9_wmask0;
+				// dont cares for now since we are just testing single port for now
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0_temp = ram10_csb0;
+   				addr0 = ram10_addr0;
+   				din0 = ram10_din0;
+   				web0 = ram10_web0;
+   				wmask0 = ram10_wmask0;
+				// dont cares for now since we are just testing single port for now
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && wbs_or11_stb && !wbs_or12_stb) begin
+				csb0_temp = ram11_csb0;
+   				addr0 = ram11_addr0;
+   				din0 = ram11_din0;
+   				web0 = ram11_web0;
+   				wmask0 = ram11_wmask0;
+				// dont cares for now since we are just testing single port for now
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && wbs_or12_stb) begin
+				csb0_temp = ram12_csb0;
+   				addr0 = ram12_addr0;
+   				din0 = ram12_din0;
+   				web0 = ram12_web0;
+   				wmask0 = ram12_wmask0;
+				// dont cares for now since we are just testing single port for now
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+			else begin
+				// no address matches with the sram macros' memory map so just disable read/writes
+				csb0_temp = 1'b1;
+   				addr0 = sram_register[`ADDR_SIZE+`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+2];
+   				din0 = sram_register[`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`PORT_SIZE+`WMASK_SIZE+2];
+   				csb0_temp = global_csb | sram_register[`PORT_SIZE+`WMASK_SIZE+1];
+   				web0 = sram_register[`PORT_SIZE+`WMASK_SIZE];
+   				wmask0 = sram_register[`PORT_SIZE+`WMASK_SIZE-1:`PORT_SIZE];
+
+   				addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+   				din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
+   				csb1_temp = 1'b1;
+   				web1 = sram_register[`WMASK_SIZE];
+   				wmask1 = sram_register[`WMASK_SIZE-1:0];
+			end
+		end else begin
+			// wishbone mode but did not receive request (stb && cyc != 1)
+			chip_select = 0;
+
+   			addr0 = sram_register[`ADDR_SIZE+`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+2];
+   			din0 = sram_register[`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`PORT_SIZE+`WMASK_SIZE+2];
+   			csb0_temp = 1'b1;
+   			web0 = sram_register[`PORT_SIZE+`WMASK_SIZE];
+   			wmask0 = sram_register[`PORT_SIZE+`WMASK_SIZE-1:`PORT_SIZE];
+
    			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
    			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
+   			csb1_temp = 1'b1;
    			web1 = sram_register[`WMASK_SIZE];
    			wmask1 = sram_register[`WMASK_SIZE-1:0];
-		end
-		else if(!wbs_or8_stb && wbs_or9_stb) begin
-			csb0_temp = ram9_csb0;
-   			addr0 = ram9_addr0;
-   			din0 = ram9_din0;
-   			web0 = ram9_web0;
-   			wmask0 = ram9_wmask0;
-			// dont cares for now since we are just testing single port for now
-   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   			web1 = sram_register[`WMASK_SIZE];
-   			wmask1 = sram_register[`WMASK_SIZE-1:0];
-		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && wbs_or10_stb) begin
-			csb0_temp = ram10_csb0;
-   			addr0 = ram10_addr0;
-   			din0 = ram10_din0;
-   			web0 = ram10_web0;
-   			wmask0 = ram10_wmask0;
-			// dont cares for now since we are just testing single port for now
-   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   			web1 = sram_register[`WMASK_SIZE];
-   			wmask1 = sram_register[`WMASK_SIZE-1:0];
-		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && wbs_or11_stb) begin
-			csb0_temp = ram11_csb0;
-   			addr0 = ram11_addr0;
-   			din0 = ram11_din0;
-   			web0 = ram11_web0;
-   			wmask0 = ram11_wmask0;
-			// dont cares for now since we are just testing single port for now
-   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   			web1 = sram_register[`WMASK_SIZE];
-   			wmask1 = sram_register[`WMASK_SIZE-1:0];
-		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && wbs_or12_stb) begin
-			csb0_temp = ram12_csb0;
-   			addr0 = ram12_addr0;
-   			din0 = ram12_din0;
-   			web0 = ram12_web0;
-   			wmask0 = ram12_wmask0;
-			// dont cares for now since we are just testing single port for now
-   			addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
-   			din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
-   			csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
-   			web1 = sram_register[`WMASK_SIZE];
-   			wmask1 = sram_register[`WMASK_SIZE-1:0];
-		end
-	end
-	else begin
-   		chip_select = sram_register[`TOTAL_SIZE-1:`TOTAL_SIZE-`SELECT_SIZE];
+   		end
+	end else begin
+		// gpio/la mode
+		chip_select = sram_register[`TOTAL_SIZE-1:`TOTAL_SIZE-`SELECT_SIZE];
 
    		addr0 = sram_register[`ADDR_SIZE+`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+2];
    		din0 = sram_register[`DATA_SIZE+`PORT_SIZE+`WMASK_SIZE+1:`PORT_SIZE+`WMASK_SIZE+2];
@@ -448,37 +481,56 @@ always @(*) begin
    		web0 = sram_register[`PORT_SIZE+`WMASK_SIZE];
    		wmask0 = sram_register[`PORT_SIZE+`WMASK_SIZE-1:`PORT_SIZE];
 
-   		addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
+ 		addr1 = sram_register[`PORT_SIZE-1:`DATA_SIZE+`WMASK_SIZE+2];
    		din1 = sram_register[`DATA_SIZE+`WMASK_SIZE+1:`WMASK_SIZE+2];
    		csb1_temp = global_csb | sram_register[`WMASK_SIZE+1];
    		web1 = sram_register[`WMASK_SIZE];
    		wmask1 = sram_register[`WMASK_SIZE-1:0];
-   	end
+
+	end
+
 end
 
 // Apply the correct CSB
 always @(*) begin
 	// this can be improved like the following:
     // csb0 = ~( (~{15'b111111111111111, csb0_temp}) << chip_select);
-	if(wbs_stb_i && wbs_cyc_i) begin
-		if(wbs_or8_stb && !wbs_or9_stb) begin
-			csb0 = {7'b1111111, csb0_temp, 8'b11111111};
+	if(mode_select) begin
+		if(wbs_stb_i && wbs_cyc_i) begin
+			if(wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0 = {7'b1111111, csb0_temp, 8'b11111111};
+				csb1 = 16'b1111111111111111;
+			end
+			else if(!wbs_or8_stb && wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0 = {6'b111111, csb0_temp, 9'b111111111};
+				csb1 = 16'b1111111111111111;
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && wbs_or10_stb && !wbs_or11_stb && !wbs_or12_stb) begin
+				csb0 = {5'b11111, csb0_temp, 10'b1111111111};
+				csb1 = 16'b1111111111111111;
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && wbs_or11_stb && !wbs_or12_stb) begin
+				csb0 = {4'b1111, csb0_temp, 11'b11111111111};
+				csb1 = 16'b1111111111111111;
+			end
+			else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && wbs_or12_stb) begin
+				csb0 = {3'b111, csb0_temp, 12'b111111111111};
+				csb1 = 16'b1111111111111111;
+			end
+			else begin
+				// incorrect address from the wishbone interface
+				csb0 = {16{1'b1}};
+				csb1 = 16'b1111111111111111;
+			end
 		end
-		else if(!wbs_or8_stb && wbs_or9_stb) begin
-			csb0 = {6'b111111, csb0_temp, 9'b111111111};
+		else begin
+			// wishbone mode but did not receive request (stb && cyc != 1)
+				csb0 = {16{1'b1}};
+				csb1 = 16'b1111111111111111;
 		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && wbs_or10_stb) begin
-			csb0 = {5'b11111, csb0_temp, 10'b1111111111};
-		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && wbs_or11_stb) begin
-			csb0 = {4'b1111, csb0_temp, 11'b11111111111};
-		end
-		else if(!wbs_or8_stb && !wbs_or9_stb && !wbs_or10_stb && !wbs_or11_stb && wbs_or12_stb) begin
-			csb0 = {3'b111, csb0_temp, 12'b111111111111};
-		end
-		csb1 = 16'b1111111111111111;
 	end
 	else begin
+		// gpio/la mode	
    		csb0 = ~( (~{15'b111111111111111, csb0_temp}) << chip_select);
    		csb1 = ~(  (~{15'b111111111111111, csb1_temp}) << chip_select);
 	end
@@ -552,6 +604,10 @@ always @ (*) begin
        read_data0 = sram15_data0;
        read_data1 = sram15_data1;
     end
+	default: begin
+       read_data0 = sram0_data0;
+       read_data1 = sram0_data1;
+	end
     endcase
 end
 
