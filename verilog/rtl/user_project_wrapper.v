@@ -271,6 +271,25 @@ sky130_sram_1kbyte_1rw1r_8x1024_8 SRAM0
    assign sram0_dout0[`DATA_SIZE-1:8] = 0;
    assign sram0_dout1[`DATA_SIZE-1:8] = 0;
 
+//sram_1kbyte_32b_2bank SRAM1 
+//     (
+//     `ifdef USE_POWER_PINS
+//      .vccd1(vccd1),
+//      .vssd1(vssd1),
+//      `endif
+//      .clk0   (clk),
+//      .csb0   (csb0[1]),
+//      .web0   (web0),
+//      .wmask0 (wmask0),
+//      .addr0  (addr0),
+//      .din0   (din0),
+//      .dout0  (sram1_dout0),
+//      .clk1   (clk),
+//      .csb1   (csb1[1]),
+//      .addr1  (addr1),
+//      .dout1  (sram1_dout1)
+//      );
+		
 sky130_sram_1kbyte_1rw1r_32x256_8 SRAM1
      (
      `ifdef USE_POWER_PINS
@@ -290,7 +309,7 @@ sky130_sram_1kbyte_1rw1r_32x256_8 SRAM1
       .dout1  (sram1_dout1)
       );
 
-sky130_sram_2kbyte_1rw1r_32x512_8 SRAM2
+sram_2kbyte_32b_2bank SRAM2
      (
      `ifdef USE_POWER_PINS
       .vccd1(vccd1),
@@ -308,6 +327,24 @@ sky130_sram_2kbyte_1rw1r_32x512_8 SRAM2
       .addr1  (addr1),
       .dout1  (sram2_dout1)
       );
+//sky130_sram_2kbyte_1rw1r_32x512_8 SRAM2
+//     (
+//     `ifdef USE_POWER_PINS
+//      .vccd1(vccd1),
+//      .vssd1(vssd1),
+//      `endif
+//      .clk0   (clk),
+//      .csb0   (csb0[2]),
+//      .web0   (web0),
+//      .wmask0 (wmask0),
+//      .addr0  (addr0),
+//      .din0   (din0),
+//      .dout0  (sram2_dout0),
+//      .clk1   (clk),
+//      .csb1   (csb1[2]),
+//      .addr1  (addr1),
+//      .dout1  (sram2_dout1)
+//      );
 
 sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM3
      (
