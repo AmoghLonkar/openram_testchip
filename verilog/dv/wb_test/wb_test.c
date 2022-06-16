@@ -48,11 +48,11 @@
 #define SRAM11_ADDRESS_MASK		(SRAM11_SIZE_BYTES - 1)
 #define SRAM11_MEM(offset)		(*(volatile uint32_t*)(SRAM11_BASE_ADDRESS + (offset & SRAM11_ADDRESS_MASK)))
 
-#define SRAM12_BASE_ADDRESS		0x30002c00
-#define SRAM12_SIZE_DWORDS		2048ul			
-#define SRAM12_SIZE_BYTES		(4ul * SRAM12_SIZE_DWORDS)
-#define SRAM12_ADDRESS_MASK		(SRAM12_SIZE_BYTES - 1)
-#define SRAM12_MEM(offset)		(*(volatile uint32_t*)(SRAM12_BASE_ADDRESS + (offset & SRAM12_ADDRESS_MASK)))
+//#define SRAM12_BASE_ADDRESS		0x30002c00
+//#define SRAM12_SIZE_DWORDS		2048ul			
+//#define SRAM12_SIZE_BYTES		(4ul * SRAM12_SIZE_DWORDS)
+//#define SRAM12_ADDRESS_MASK		(SRAM12_SIZE_BYTES - 1)
+//#define SRAM12_MEM(offset)		(*(volatile uint32_t*)(SRAM12_BASE_ADDRESS + (offset & SRAM12_ADDRESS_MASK)))
 
 void main()
 {
@@ -95,8 +95,7 @@ void main()
 	reg_mprj_io_29 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_30 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_31 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_32 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_34 = GPIO_MODE_MGMT_STD_OUTPUT;
+	//reg_mprj_io_34 = GPIO_MODE_MGMT_STD_OUTPUT;
 	/* Apply configuration */
 	reg_mprj_xfer = 1;
 	while (reg_mprj_xfer == 1);
@@ -109,25 +108,25 @@ void main()
 	SRAM9_MEM(0) = 0xbeefdead;
 	SRAM10_MEM(0) = 0xbeef1234;
 	SRAM11_MEM(0) = 0xbeef5678;
-	SRAM12_MEM(0) = 0xbeef9abc;
+//	SRAM12_MEM(0) = 0xbeef9abc;
 
 	SRAM8_MEM(4) = 0xdeadbee0;
 	SRAM9_MEM(4) = 0xbee0dead;
 	SRAM10_MEM(4) = 0xbee1dead;
 	SRAM11_MEM(4) = 0xbee2dead;
-	SRAM12_MEM(4) = 0xbee3dead;
+//	SRAM12_MEM(4) = 0xbee3dead;
 
 	SRAM8_MEM(8) = 0xffffffff;
 	SRAM9_MEM(8) = 0x12345678;
 	SRAM10_MEM(8) = 0xabababab;
 	SRAM11_MEM(8) = 0xcdcdcdcd;
-	SRAM12_MEM(8) = 0xefefefef;
+//	SRAM12_MEM(8) = 0xefefefef;
 
 	SRAM8_MEM(12) = 0xdeaddead;
 	SRAM9_MEM(12) = 0x10101010;
 	SRAM10_MEM(12) = 0x20202020;
 	SRAM11_MEM(12) = 0x30303030;
-	SRAM12_MEM(12) = 0x40404040;
+//	SRAM12_MEM(12) = 0x40404040;
 
 	if (SRAM8_MEM(0) != 0xdeadbeef) {
 		// send an error signal to the testbench
@@ -198,22 +197,22 @@ void main()
 		reg_mprj_datal = 0x80000000;
 	}
 
-	if (SRAM12_MEM(0) != 0xbeef9abc) {
-		// send an error signal to the testbench
-		reg_mprj_datah = 0x00000004;
-	}
-	if (SRAM12_MEM(4) != 0xbee3dead) {
-		// send an error signal to the testbench
-		reg_mprj_datah = 0x00000004;
-	}
-	if (SRAM12_MEM(8) != 0xefefefef) {
-		// send an error signal to the testbench
-		reg_mprj_datah = 0x00000004;
-	}
-	if (SRAM12_MEM(12) != 0x40404040) {
-		// send an error signal to the testbench
-		reg_mprj_datah = 0x00000004;
-	}
+//	if (SRAM12_MEM(0) != 0xbeef9abc) {
+//		// send an error signal to the testbench
+//		reg_mprj_datah = 0x00000004;
+//	}
+//	if (SRAM12_MEM(4) != 0xbee3dead) {
+//		// send an error signal to the testbench
+//		reg_mprj_datah = 0x00000004;
+//	}
+//	if (SRAM12_MEM(8) != 0xefefefef) {
+//		// send an error signal to the testbench
+//		reg_mprj_datah = 0x00000004;
+//	}
+//	if (SRAM12_MEM(12) != 0x40404040) {
+//		// send an error signal to the testbench
+//		reg_mprj_datah = 0x00000004;
+//	}
 
 	reg_mprj_datal = 0x00000000;			
 }
