@@ -50,7 +50,7 @@ module sram_2kbyte_32b_2bank (
   reg csb1_bank1;
   reg [ADDR_WIDTH - 1 : 0] addr0_reg;
   reg [ADDR_WIDTH - 1 : 0] addr1_reg;
-  sram_1kbyte_32b_2bank_1bank bank0 (
+  sky130_sram_1kbyte_1rw1r_32x256_8 bank0 (
 `ifdef USE_POWER_PINS
     .vccd1(vccd1),
     .vssd1(vssd1),
@@ -68,7 +68,7 @@ module sram_2kbyte_32b_2bank (
     .dout1(dout1_bank0)
   );
   
-  sram_1kbyte_32b_2bank_1bank bank1 (
+  sky130_sram_1kbyte_1rw1r_32x256_8 bank1 (
 `ifdef USE_POWER_PINS
     .vccd1(vccd1),
     .vssd1(vssd1),
