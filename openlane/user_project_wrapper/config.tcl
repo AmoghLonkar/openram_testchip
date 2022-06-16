@@ -34,6 +34,7 @@ set ::env(DESIGN_NAME) user_project_wrapper
 set ::env(VERILOG_FILES) "\
 	$::env(CARAVEL_ROOT)/verilog/rtl/defines.v \
 	$script_dir/../../verilog/rtl/user_project_wrapper.v \
+    $script_dir/../../verilog/rtl/sky130_sram_2kbyte_32b_2bank.v \
 	$script_dir/../../verilog/rtl/wishbone_wrapper.v \
 	$script_dir/../../verilog/rtl/wishbone_ram_mux.v \
 	$script_dir/../../verilog/rtl/openram_testchip.v"
@@ -49,6 +50,7 @@ set ::env(BASE_SDC_FILE) "$script_dir/base.sdc"
 ## Internal Macros
 ### Macro Placement
 set ::env(MACRO_PLACEMENT_CFG) $script_dir/macro.cfg
+
 
 ### Black-box verilog and views
 set ::env(VERILOG_FILES_BLACKBOX) "\
