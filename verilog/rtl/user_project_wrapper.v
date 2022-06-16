@@ -227,8 +227,8 @@ module user_project_wrapper #(
    wire [`DATA_SIZE-1:0]  sram3_dout1;
    wire [`DATA_SIZE-1:0]  sram4_dout0;
    wire [`DATA_SIZE-1:0]  sram4_dout1;
-   wire [`DATA_SIZE-1:0]  sram5_dout0 = 0;
-   wire [`DATA_SIZE-1:0]  sram5_dout1 = 0;
+   wire [`DATA_SIZE-1:0]  sram5_dout0;
+   wire [`DATA_SIZE-1:0]  sram5_dout1;
    wire [`DATA_SIZE-1:0]  sram6_dout0 = 0;
    wire [`DATA_SIZE-1:0]  sram6_dout1 = 0;
    wire [`DATA_SIZE-1:0]  sram7_dout0 = 0;
@@ -270,25 +270,6 @@ sky130_sram_1kbyte_1rw1r_8x1024_8 SRAM0
       );
    assign sram0_dout0[`DATA_SIZE-1:8] = 0;
    assign sram0_dout1[`DATA_SIZE-1:8] = 0;
-
-//sram_1kbyte_32b_2bank SRAM1 
-//     (
-//     `ifdef USE_POWER_PINS
-//      .vccd1(vccd1),
-//      .vssd1(vssd1),
-//      `endif
-//      .clk0   (clk),
-//      .csb0   (csb0[1]),
-//      .web0   (web0),
-//      .wmask0 (wmask0),
-//      .addr0  (addr0),
-//      .din0   (din0),
-//      .dout0  (sram1_dout0),
-//      .clk1   (clk),
-//      .csb1   (csb1[1]),
-//      .addr1  (addr1),
-//      .dout1  (sram1_dout1)
-//      );
 		
 sky130_sram_1kbyte_1rw1r_32x256_8 SRAM1
      (
@@ -327,26 +308,8 @@ sram_2kbyte_32b_2bank SRAM2
       .addr1  (addr1),
       .dout1  (sram2_dout1)
       );
-//sky130_sram_2kbyte_1rw1r_32x512_8 SRAM2
-//     (
-//     `ifdef USE_POWER_PINS
-//      .vccd1(vccd1),
-//      .vssd1(vssd1),
-//      `endif
-//      .clk0   (clk),
-//      .csb0   (csb0[2]),
-//      .web0   (web0),
-//      .wmask0 (wmask0),
-//      .addr0  (addr0),
-//      .din0   (din0),
-//      .dout0  (sram2_dout0),
-//      .clk1   (clk),
-//      .csb1   (csb1[2]),
-//      .addr1  (addr1),
-//      .dout1  (sram2_dout1)
-//      );
 
-sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM3
+sky130_sram_2kbyte_1rw1r_32x512_8 SRAM3
      (
      `ifdef USE_POWER_PINS
       .vccd1(vccd1),
@@ -365,7 +328,7 @@ sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM3
       .dout1  (sram3_dout1)
       );
 
-sky130_sram_8kbyte_1rw1r_32x2048_8 SRAM4
+sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM4
      (
      `ifdef USE_POWER_PINS
       .vccd1(vccd1),
@@ -382,6 +345,25 @@ sky130_sram_8kbyte_1rw1r_32x2048_8 SRAM4
       .csb1   (csb1[4]),
       .addr1  (addr1),
       .dout1  (sram4_dout1)
+      );
+
+sky130_sram_8kbyte_1rw1r_32x2048_8 SRAM5
+     (
+     `ifdef USE_POWER_PINS
+      .vccd1(vccd1),
+      .vssd1(vssd1),
+      `endif
+      .clk0   (clk),
+      .csb0   (csb0[5]),
+      .web0   (web0),
+      .wmask0 (wmask0),
+      .addr0  (addr0),
+      .din0   (din0),
+      .dout0  (sram5_dout0),
+      .clk1   (clk),
+      .csb1   (csb1[5]),
+      .addr1  (addr1),
+      .dout1  (sram5_dout1)
       );
 
 // Not working yet
@@ -478,22 +460,22 @@ sky130_sram_4kbyte_1rw_64x512_8 SRAM11
    assign sram11_dout0 = {temp_sram11_dout0[63:48], temp_sram11_dout0[15:0]};
 
    wire [63:0] temp_sram12_dout0;
-sky130_sram_8kbyte_1rw_64x1024_8 SRAM12
-    (
-      `ifdef USE_POWER_PINS
-     .vccd1(vccd1),
-     .vssd1(vssd1),
-      `endif
-     .clk0   (clk),
-     .csb0   (csb0[12]),
-     .web0   (web0),
-     .wmask0 ({wmask0[3:2],4'hF,wmask0[1:0]}),
-     .addr0  (addr0),
-     .din0   ({1'b0, din0, din0}),
-     .dout0  ({disconn12, temp_sram12_dout0}),
-     .spare_wen0(1'b0)
-     );
-   assign sram12_dout0 = {temp_sram12_dout0[63:48], temp_sram12_dout0[15:0]};
+//sky130_sram_8kbyte_1rw_64x1024_8 SRAM12
+//    (
+//      `ifdef USE_POWER_PINS
+//     .vccd1(vccd1),
+//     .vssd1(vssd1),
+//      `endif
+//     .clk0   (clk),
+//     .csb0   (csb0[12]),
+//     .web0   (web0),
+//     .wmask0 ({wmask0[3:2],4'hF,wmask0[1:0]}),
+//     .addr0  (addr0),
+//     .din0   ({1'b0, din0, din0}),
+//     .dout0  ({disconn12, temp_sram12_dout0}),
+//     .spare_wen0(1'b0)
+//     );
+//   assign sram12_dout0 = {temp_sram12_dout0[63:48], temp_sram12_dout0[15:0]};
 
    // Hold dout from SRAM
    // clocked by SRAM clk
