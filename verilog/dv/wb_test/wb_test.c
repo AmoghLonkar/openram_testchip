@@ -37,16 +37,22 @@
 #define SRAM9_MEM(offset)		(*(volatile uint32_t*)(SRAM9_BASE_ADDRESS + (offset & SRAM9_ADDRESS_MASK)))
 
 #define SRAM10_BASE_ADDRESS		0x30000c00
-#define SRAM10_SIZE_DWORDS		1024ul			
+#define SRAM10_SIZE_DWORDS		512ul			
 #define SRAM10_SIZE_BYTES		(4ul * SRAM10_SIZE_DWORDS)
 #define SRAM10_ADDRESS_MASK		(SRAM10_SIZE_BYTES - 1)
 #define SRAM10_MEM(offset)		(*(volatile uint32_t*)(SRAM10_BASE_ADDRESS + (offset & SRAM10_ADDRESS_MASK)))
 
-#define SRAM11_BASE_ADDRESS		0x30001c00
-#define SRAM11_SIZE_DWORDS		1024ul			
-#define SRAM11_SIZE_BYTES		(4ul * SRAM11_SIZE_DWORDS)
-#define SRAM11_ADDRESS_MASK		(SRAM11_SIZE_BYTES - 1)
-#define SRAM11_MEM(offset)		(*(volatile uint32_t*)(SRAM11_BASE_ADDRESS + (offset & SRAM11_ADDRESS_MASK)))
+//#define SRAM10_BASE_ADDRESS		0x30000c00
+//#define SRAM10_SIZE_DWORDS		1024ul			
+//#define SRAM10_SIZE_BYTES		(4ul * SRAM10_SIZE_DWORDS)
+//#define SRAM10_ADDRESS_MASK		(SRAM10_SIZE_BYTES - 1)
+//#define SRAM10_MEM(offset)		(*(volatile uint32_t*)(SRAM10_BASE_ADDRESS + (offset & SRAM10_ADDRESS_MASK)))
+
+//#define SRAM11_BASE_ADDRESS		0x30001c00
+//#define SRAM11_SIZE_DWORDS		1024ul			
+//#define SRAM11_SIZE_BYTES		(4ul * SRAM11_SIZE_DWORDS)
+//#define SRAM11_ADDRESS_MASK		(SRAM11_SIZE_BYTES - 1)
+//#define SRAM11_MEM(offset)		(*(volatile uint32_t*)(SRAM11_BASE_ADDRESS + (offset & SRAM11_ADDRESS_MASK)))
 
 //#define SRAM12_BASE_ADDRESS		0x30002c00
 //#define SRAM12_SIZE_DWORDS		2048ul			
@@ -107,25 +113,25 @@ void main()
 	SRAM8_MEM(0) = 0xdeadbeef;
 	SRAM9_MEM(0) = 0xbeefdead;
 	SRAM10_MEM(0) = 0xbeef1234;
-	SRAM11_MEM(0) = 0xbeef5678;
+//	SRAM11_MEM(0) = 0xbeef5678;
 //	SRAM12_MEM(0) = 0xbeef9abc;
 
 	SRAM8_MEM(4) = 0xdeadbee0;
 	SRAM9_MEM(4) = 0xbee0dead;
 	SRAM10_MEM(4) = 0xbee1dead;
-	SRAM11_MEM(4) = 0xbee2dead;
+//	SRAM11_MEM(4) = 0xbee2dead;
 //	SRAM12_MEM(4) = 0xbee3dead;
 
 	SRAM8_MEM(8) = 0xffffffff;
 	SRAM9_MEM(8) = 0x12345678;
 	SRAM10_MEM(8) = 0xabababab;
-	SRAM11_MEM(8) = 0xcdcdcdcd;
+//	SRAM11_MEM(8) = 0xcdcdcdcd;
 //	SRAM12_MEM(8) = 0xefefefef;
 
 	SRAM8_MEM(12) = 0xdeaddead;
 	SRAM9_MEM(12) = 0x10101010;
 	SRAM10_MEM(12) = 0x20202020;
-	SRAM11_MEM(12) = 0x30303030;
+//	SRAM11_MEM(12) = 0x30303030;
 //	SRAM12_MEM(12) = 0x40404040;
 
 	if (SRAM8_MEM(0) != 0xdeadbeef) {
@@ -180,22 +186,22 @@ void main()
 		reg_mprj_datal = 0x40000000;
 	}
 
-	if (SRAM11_MEM(0) != 0xbeef5678) {
-		// send an error signal to the testbench
-		reg_mprj_datal = 0x80000000;
-	}
-	if (SRAM11_MEM(4) != 0xbee2dead) {
-		// send an error signal to the testbench
-		reg_mprj_datal = 0x80000000;
-	}
-	if (SRAM11_MEM(8) != 0xcdcdcdcd) {
-		// send an error signal to the testbench
-		reg_mprj_datal = 0x80000000;
-	}
-	if (SRAM11_MEM(12) != 0x30303030) {
-		// send an error signal to the testbench
-		reg_mprj_datal = 0x80000000;
-	}
+//	if (SRAM11_MEM(0) != 0xbeef5678) {
+//		// send an error signal to the testbench
+//		reg_mprj_datal = 0x80000000;
+//	}
+//	if (SRAM11_MEM(4) != 0xbee2dead) {
+//		// send an error signal to the testbench
+//		reg_mprj_datal = 0x80000000;
+//	}
+//	if (SRAM11_MEM(8) != 0xcdcdcdcd) {
+//		// send an error signal to the testbench
+//		reg_mprj_datal = 0x80000000;
+//	}
+//	if (SRAM11_MEM(12) != 0x30303030) {
+//		// send an error signal to the testbench
+//		reg_mprj_datal = 0x80000000;
+//	}
 
 //	if (SRAM12_MEM(0) != 0xbeef9abc) {
 //		// send an error signal to the testbench

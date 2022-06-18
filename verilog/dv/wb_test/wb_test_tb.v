@@ -104,10 +104,10 @@ module wb_test_tb;
 		$display($time, " Data mismatch while reading data from SRAM 10!"); 
 	end
 
-	initial begin
-		wait (mprj_io_31 == 1'b1);
-		$display($time, " Data mismatch while reading data from SRAM 11!"); 
-	end
+//	initial begin
+//		wait (mprj_io_31 == 1'b1);
+//		$display($time, " Data mismatch while reading data from SRAM 11!"); 
+//	end
 
 //	initial begin
 //		// for some reason mprj_io_32 not getting high if an error is detected

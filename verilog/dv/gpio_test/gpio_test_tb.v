@@ -168,7 +168,7 @@ module gpio_test_tb;
 	   # 100;
 
 		//Testing 32B Dual Port Memories
-		for(i = 0; i < 6; i = i + 1) begin
+		for(i = 0; i < 7; i = i + 1) begin
 		   // write 1 to address 1
 		   write_sram(
 				  i,
@@ -210,7 +210,7 @@ module gpio_test_tb;
 		end
 
 		//Testing 32B Single Port Memories
-		for(i = 8; i < 12; i = i + 1) begin
+		for(i = 8; i < 11; i = i + 1) begin
 
 		   // write 1 to address 1
 		   write_sram(i,

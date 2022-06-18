@@ -133,10 +133,10 @@ module la_test_tb;
 		$display($time, " Data mismatch while reading byte from SRAM 10!");
 	end
 
-	initial begin
-		wait (mprj_io_37 == 1'b1);
-		$display($time, " Data mismatch while reading byte from SRAM 11!");
-	end
+//	initial begin
+//		wait (mprj_io_37 == 1'b1);
+//		$display($time, " Data mismatch while reading byte from SRAM 11!");
+//	end
 
    initial begin
       #10000000

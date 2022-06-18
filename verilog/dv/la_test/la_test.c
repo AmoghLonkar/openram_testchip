@@ -224,7 +224,7 @@ void main()
 	reg_mprj_io_34 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_35 = GPIO_MODE_MGMT_STD_OUTPUT;
 	reg_mprj_io_36 = GPIO_MODE_MGMT_STD_OUTPUT;
-	reg_mprj_io_37 = GPIO_MODE_MGMT_STD_OUTPUT;
+//	reg_mprj_io_37 = GPIO_MODE_MGMT_STD_OUTPUT;
  
 	/* Apply configuration */
 	reg_mprj_xfer = 1;
@@ -235,8 +235,8 @@ void main()
 	/* DUAL PORT MEMORIES */
 
 	//SRAM 0
-	write_dp_sram(0);
-	read_dp_sram(0);
+//	write_dp_sram(0);
+//	read_dp_sram(0);
 
         //SRAM 1
     write_dp_sram(1);
@@ -257,6 +257,10 @@ void main()
       // SRAM 5
 	write_dp_sram(5);
 	read_dp_sram(5);
+	
+      // SRAM 6
+	write_dp_sram(6);
+	read_dp_sram(6);
 //
 //	/* SINGLE PORT MEMORIES */
 //
@@ -273,8 +277,8 @@ void main()
 	read_sp_sram(10);
 
 	// SRAM 11
-	write_sp_sram(11);
-	read_sp_sram(11);
+//	write_sp_sram(11);
+//	read_sp_sram(11);
 
 //	write_sp_sram(12);
 //	read_sp_sram(12);
