@@ -24,8 +24,13 @@ configurations have varying levels of verification. In particular, it has these 
 
 There are three test modes available. Each one inputs a packet that
 configures the read and write operations of a particular SRAM. The
-GPIO pin io_in[16] determines whether to use GPIO (1) or LA mode (0).
-
+GPIO pin io_in[14] determines whether to use Wishbone mode (1) or GPIO/LA mode (0). Furthermore, io_in[23] and io_in[16] determines the clock the design runs on.
+```
+{io_in[23], io_in[16]}
+2'b00 : clock is provided through LA (la test mode)
+2'b01 : clock is provided through io_in[17] (gpio test mode)
+2'b10 : clock is provided through wb_clk_i (wishbone test mode)
+```
 ## Test Packet
 
 The test packet is a 112-bit value that has the follow signals and bit size:
@@ -52,7 +57,8 @@ of packet bits.
 
 In GPIO mode, the test packet is scanned in/out with the GPIO pins in 112 cycles. The
 GPIO pins used are as follows:
-* Test mode select: in_select io_in[16]
+* Test mode select: in_select io_in[14] = 0                 // selects the testing mode to be gpio
+* Clock select: clk_select {io_in[23], io[16]} = 2'b01      // makes sure the clk goes through the io_in[17]
 * Scan reset: resetn: io_in[15]
 * Scan clock: gpio_clk io_in[17]
 * Scan enable: gpio_scan io_in[19]
@@ -65,11 +71,22 @@ GPIO pins used are as follows:
 ## LA Mode
 
 In LA mode, the test packet is directly written from the output of the 128-bit LA.
-The top bits of the LA register are used for the control signals during test:
+* Test mode select: in_select io_in[14] = 0                 // selects the testing mode to be gpio
+* Clock select: clk_select {io_in[23], io[16]} = 2'b00      // makes sure the clk goes through the la_data_in[127]
 * Control register clock: la_clk la_data_in[127]
 * Load control register: la_in_load la_data_in[125]
 * Load SRAM result into register: la_sram_load la_data_in[124]
-* CSB for all SRAM: ??
+* CSB for all SRAM: la_global_cs la_data_in[123]
+
+## Wishbone Mode (WIP)
+
+The wishbone mode currently tests the single port memories. The wishbone interface is used to provide data packet to the memories based on the address map of each memory.
+* Test mode select: in_select io_in[14] = 1                 // selects the testing mode to be wishbone
+* Clock select: clk_select {io_in[23], io[16]} = 2'b00      // makes sure the clk goes through the wb_clk_i
+* CSB for all SRAM: based on the wbs_cyc_i, wbs_stb_i and wbs_adr_i. 
+* Data for all SRAM: wbs_dat_i
+* Write enable for all SRAM: wbs_we_i
+
 
 # Authors
 Muhammad Hadir Khan <mkhan33@ucsc.edu>
