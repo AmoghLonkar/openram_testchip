@@ -9,20 +9,20 @@
 
 This project contains a test chip for several OpenRAM memory configurations. The
 configurations have varying levels of verification. In particular, it has these sizes:
-* sky130_sram_1kbyte_1rw1r_8x1024_8
-* sky130_sram_1kbyte_1rw1r_32x256_8
-* sky130_sram_2kbyte_1rw1r_32x512_8
-* sky130_sram_4kbyte_1rw1r_32x1024_8
-* sky130_sram_8kbyte_1rw1r_32x2048_8
-* sky130_sram_1kbyte_1rw_32x256_8
-* sky130_sram_2kbyte_1rw_32x512_8
-* sky130_sram_4kbyte_1rw_32x1024_8
-* sky130_sram_4kbyte_1rw_32x512_8
-* sky130_sram_8kbyte_1rw_64x1024_8
+* sky130_sram_1kbyte_1rw1r_8x1024_8 SRAM0
+* sky130_sram_1kbyte_1rw1r_32x256_8 SRAM1
+* sram_2kbyte_32b_2bank SRAM2 (2 x sky130_sram_1kbyte_1rw1r_32x256_8)
+* sky130_sram_2kbyte_1rw1r_32x512_8 SRAM3
+* sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM4
+* sky130_sram_2kbyte_1rw1r_32x512_8 SRAM5
+* sky130_sram_4kbyte_1rw1r_32x1024_8 SRAM6
+* sky130_sram_1kbyte_1rw_32x256_8 SRAM8
+* sky130_sram_2kbyte_1rw_32x512_8 SRAM9
+* sky130_sram_2kbyte_1rw_32x512_8 SRAM10
 
 # Test Modes
 
-There are two test modes available. Each one inputs an packet that
+There are three test modes available. Each one inputs a packet that
 configures the read and write operations of a particular SRAM. The
 GPIO pin io_in[16] determines whether to use GPIO (1) or LA mode (0).
 
@@ -72,7 +72,9 @@ The top bits of the LA register are used for the control signals during test:
 * CSB for all SRAM: ??
 
 # Authors
-
+Muhammad Hadir Khan <mkhan33@ucsc.edu>
 Jesse Cirimeli-Low <jcirimel@ucsc.edu>
 Amogh Lonkar <alonkar@ucsc.edu>
+Bugra Onal <bonal@ucsc.edu>
+Samuel Crow <sacrow@ucsc.edu>
 Matthew Guthaus <mrg@ucsc.edu>
