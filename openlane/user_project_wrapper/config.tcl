@@ -60,35 +60,24 @@ set ::env(VERILOG_FILES_BLACKBOX) "\
 	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw1r_8x1024_8.v \
 	$script_dir/../../verilog/rtl/sky130_sram_2kbyte_1rw1r_32x512_8.v \
 	$script_dir/../../verilog/rtl/sky130_sram_4kbyte_1rw1r_32x1024_8.v \
-	$script_dir/../../verilog/rtl/sky130_sram_8kbyte_1rw1r_32x2048_8.v \
 	$script_dir/../../verilog/rtl/sky130_sram_1kbyte_1rw_32x256_8.v \
-	$script_dir/../../verilog/rtl/sky130_sram_2kbyte_1rw_32x512_8.v \
-	$script_dir/../../verilog/rtl/sky130_sram_4kbyte_1rw_32x1024_8.v \
-	$script_dir/../../verilog/rtl/sky130_sram_4kbyte_1rw_64x512_8.v \
-	$script_dir/../../verilog/rtl/sky130_sram_8kbyte_1rw_64x1024_8.v"
+	$script_dir/../../verilog/rtl/sky130_sram_2kbyte_1rw_32x512_8.v"
 
 set ::env(EXTRA_LEFS) "\
 	$script_dir/../../lef/sky130_sram_1kbyte_1rw1r_32x256_8.lef \
 	$script_dir/../../lef/sky130_sram_1kbyte_1rw1r_8x1024_8.lef \
 	$script_dir/../../lef/sky130_sram_2kbyte_1rw1r_32x512_8.lef \
 	$script_dir/../../lef/sky130_sram_4kbyte_1rw1r_32x1024_8.lef \
-	$script_dir/../../lef/sky130_sram_8kbyte_1rw1r_32x2048_8.lef \
 	$script_dir/../../lef/sky130_sram_1kbyte_1rw_32x256_8.lef \
-	$script_dir/../../lef/sky130_sram_2kbyte_1rw_32x512_8.lef \
-	$script_dir/../../lef/sky130_sram_4kbyte_1rw_32x1024_8.lef \
-	$script_dir/../../lef/sky130_sram_4kbyte_1rw_64x512_8.lef \
-	$script_dir/../../lef/sky130_sram_8kbyte_1rw_64x1024_8.lef"
+	$script_dir/../../lef/sky130_sram_2kbyte_1rw_32x512_8.lef"
 
 set ::env(EXTRA_GDS_FILES) "\
 	$script_dir/../../gds/sky130_sram_1kbyte_1rw1r_32x256_8.gds \
 	$script_dir/../../gds/sky130_sram_1kbyte_1rw1r_8x1024_8.gds \
 	$script_dir/../../gds/sky130_sram_2kbyte_1rw1r_32x512_8.gds \
 	$script_dir/../../gds/sky130_sram_4kbyte_1rw1r_32x1024_8.gds \
-	$script_dir/../../gds/sky130_sram_8kbyte_1rw1r_32x2048_8.gds \
 	$script_dir/../../gds/sky130_sram_1kbyte_1rw_32x256_8.gds \
-	$script_dir/../../gds/sky130_sram_2kbyte_1rw_32x512_8.gds \
-	$script_dir/../../gds/sky130_sram_4kbyte_1rw_32x1024_8.gds \
-	$script_dir/../../gds/sky130_sram_4kbyte_1rw_64x512_8.gds" 
+	$script_dir/../../gds/sky130_sram_2kbyte_1rw_32x512_8.gds"
 
 # set ::env(GLB_RT_MAXLAYER) 5
 set ::env(RT_MAX_LAYER) {met4}
@@ -113,6 +102,7 @@ set ::env(RUN_KLAYOUT_XOR) 0
 
 set ::env(DIODE_INSERTION_STRATEGY) 4
 set ::env(FILL_INSERTION) 1
+
 #set ::env(DIODE_INSERTION_STRATEGY) 0
 #set ::env(FILL_INSERTION) 0
 # The following is because there are no std cells in the example wrapper project.
@@ -129,4 +119,8 @@ set ::env(FILL_INSERTION) 1
 #set ::env(TAP_DECAP_INSERTION) 0
 # set ::env(CLOCK_TREE_SYNTH) 0
 set ::env(RUN_CVC) 0
+set ::env(RUN_MAGIC_DRC) 0
+
 set ::env(MAGIC_DRC_USE_GDS) 0
+set ::env(QUIT_ON_MAGIC_DRC) 0
+set ::env(PRIMARY_SIGNOFF_TOOL) klayout
