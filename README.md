@@ -5,7 +5,7 @@
 | :exclamation: Important Note            |
 |-----------------------------------------|
 
-# overview
+# Overview
 
 This project contains a test chip for several OpenRAM memory configurations. The
 configurations have varying levels of verification. In particular, it has these sizes:
